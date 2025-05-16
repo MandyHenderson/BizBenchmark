@@ -1,0 +1,19 @@
+{
+  "source_input_file_full_name": "benchmark_金融学表格_proportional_filtered_vTableData_eval.json",
+  "source_input_file_stem": "benchmark_金融学表格_proportional_filtered_vTableData_eval",
+  "question_type_folder": "Table_QA",
+  "model_name_from_path": "deepseek-reasoner",
+  "total_items_in_source_file": 1012,
+  "total_items_successfully_graded_by_llm_grader_this_run": 1012,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 720,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.7115,
+  "llm_grader_category_breakdown_successful_grades": {
+    "OFF_TOPIC": 1,
+    "CORRECT": 654,
+    "INCORRECT": 187,
+    "INVALID_QUESTION": 13,
+    "PARTIALLY_CORRECT": 91,
+    "CORRECT_BUT_REASONING_MISMATCH": 66
+  }
+}

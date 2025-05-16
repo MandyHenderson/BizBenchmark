@@ -1,0 +1,19 @@
+{
+  "source_input_file_full_name": "benchmark_finance_empirical_proportional_filtered_vFinal_eval.json",
+  "source_input_file_stem": "benchmark_finance_empirical_proportional_filtered_vFinal_eval",
+  "question_type_folder": "general_QA",
+  "model_name_from_path": "claude-3-sonnet-20240229",
+  "total_items_in_source_file": 3462,
+  "total_items_successfully_graded_by_llm_grader_this_run": 3462,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 2480,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.7163,
+  "llm_grader_category_breakdown_successful_grades": {
+    "CORRECT": 2480,
+    "INCORRECT": 163,
+    "CORRECT_BUT_REASONING_MISMATCH": 239,
+    "PARTIALLY_CORRECT": 512,
+    "INVALID_QUESTION": 61,
+    "GRADER_INVALID_FORMAT": 7
+  }
+}

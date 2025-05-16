@@ -1,0 +1,20 @@
+{
+  "source_input_file_full_name": "benchmark_OM_TF_filtered_eval.json",
+  "source_input_file_stem": "benchmark_OM_TF_filtered_eval",
+  "question_type_folder": "TF",
+  "model_name_from_path": "llama-3.3-70b-instruct",
+  "total_items_in_source_file": 1445,
+  "total_items_successfully_graded_by_llm_grader_this_run": 1445,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 656,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.454,
+  "llm_grader_category_breakdown_successful_grades": {
+    "CORRECT": 656,
+    "INCORRECT": 550,
+    "INVALID_QUESTION": 136,
+    "CORRECT_BUT_REASONING_MISMATCH": 99,
+    "REASONING_CORRECT_BUT_ANSWER_WRONG": 1,
+    "OFF_TOPIC": 2,
+    "PARTIALLY_CORRECT": 1
+  }
+}

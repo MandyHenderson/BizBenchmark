@@ -1,0 +1,19 @@
+{
+  "source_input_file_full_name": "benchmark_textbook_stats_eval.json",
+  "source_input_file_stem": "benchmark_textbook_stats_eval",
+  "question_type_folder": "general_QA",
+  "model_name_from_path": "qwen2.5-72b-instruct",
+  "total_items_in_source_file": 352,
+  "total_items_successfully_graded_by_llm_grader_this_run": 352,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 282,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.8011,
+  "llm_grader_category_breakdown_successful_grades": {
+    "CORRECT_BUT_REASONING_MISMATCH": 14,
+    "PARTIALLY_CORRECT": 26,
+    "CORRECT": 282,
+    "INCORRECT": 28,
+    "INVALID_QUESTION": 1,
+    "GRADER_INVALID_FORMAT": 1
+  }
+}

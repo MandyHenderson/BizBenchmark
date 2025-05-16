@@ -1,0 +1,19 @@
+{
+  "source_input_file_full_name": "benchmark_textbook_econ_eval.json",
+  "source_input_file_stem": "benchmark_textbook_econ_eval",
+  "question_type_folder": "general_QA",
+  "model_name_from_path": "gpt-4-0125-preview",
+  "total_items_in_source_file": 617,
+  "total_items_successfully_graded_by_llm_grader_this_run": 617,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 477,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.7731,
+  "llm_grader_category_breakdown_successful_grades": {
+    "INVALID_QUESTION": 26,
+    "INCORRECT": 34,
+    "CORRECT": 477,
+    "CORRECT_BUT_REASONING_MISMATCH": 48,
+    "PARTIALLY_CORRECT": 31,
+    "GRADER_INVALID_FORMAT": 1
+  }
+}

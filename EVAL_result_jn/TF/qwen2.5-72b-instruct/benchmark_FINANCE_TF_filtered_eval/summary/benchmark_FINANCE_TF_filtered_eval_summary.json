@@ -1,0 +1,18 @@
+{
+  "source_input_file_full_name": "benchmark_FINANCE_TF_filtered_eval.json",
+  "source_input_file_stem": "benchmark_FINANCE_TF_filtered_eval",
+  "question_type_folder": "TF",
+  "model_name_from_path": "qwen2.5-72b-instruct",
+  "total_items_in_source_file": 1480,
+  "total_items_successfully_graded_by_llm_grader_this_run": 1480,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 693,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.4682,
+  "llm_grader_category_breakdown_successful_grades": {
+    "CORRECT": 693,
+    "INCORRECT": 497,
+    "CORRECT_BUT_REASONING_MISMATCH": 89,
+    "INVALID_QUESTION": 197,
+    "PARTIALLY_CORRECT": 4
+  }
+}

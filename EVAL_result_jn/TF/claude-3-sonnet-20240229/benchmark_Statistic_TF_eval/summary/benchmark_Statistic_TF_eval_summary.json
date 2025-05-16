@@ -1,0 +1,19 @@
+{
+  "source_input_file_full_name": "benchmark_Statistic_TF_eval.json",
+  "source_input_file_stem": "benchmark_Statistic_TF_eval",
+  "question_type_folder": "TF",
+  "model_name_from_path": "claude-3-sonnet-20240229",
+  "total_items_in_source_file": 1232,
+  "total_items_successfully_graded_by_llm_grader_this_run": 1232,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 510,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.414,
+  "llm_grader_category_breakdown_successful_grades": {
+    "INVALID_QUESTION": 208,
+    "CORRECT": 510,
+    "CORRECT_BUT_REASONING_MISMATCH": 102,
+    "INCORRECT": 409,
+    "PARTIALLY_CORRECT": 2,
+    "REASONING_CORRECT_BUT_ANSWER_WRONG": 1
+  }
+}

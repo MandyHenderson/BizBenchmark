@@ -1,0 +1,18 @@
+{
+  "source_input_file_full_name": "benchmark_经济表格_proportional_filtered_vTableData_eval.json",
+  "source_input_file_stem": "benchmark_经济表格_proportional_filtered_vTableData_eval",
+  "question_type_folder": "Table_QA",
+  "model_name_from_path": "claude-3-5-sonnet-latest",
+  "total_items_in_source_file": 1463,
+  "total_items_successfully_graded_by_llm_grader_this_run": 1463,
+  "items_with_api_error_this_run": 0,
+  "items_graded_as_correct_by_llm_grader": 911,
+  "accuracy_according_to_llm_grader_on_successful_grades": 0.6227,
+  "llm_grader_category_breakdown_successful_grades": {
+    "INCORRECT": 253,
+    "CORRECT": 851,
+    "CORRECT_BUT_REASONING_MISMATCH": 60,
+    "PARTIALLY_CORRECT": 296,
+    "INVALID_QUESTION": 3
+  }
+}
