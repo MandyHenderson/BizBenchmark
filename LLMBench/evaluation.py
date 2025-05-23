@@ -14,7 +14,6 @@ import argparse
 # -------------------------------------------
 from openai import AsyncOpenAI
 
-# ------------------ 配置部分 ------------------
 API_KEY = "sk-****"  # Replace with your actual key or load securely
 BASE_URL = "https://api.deepseek.com/v1"  # Verify/adjust if using a different provider or endpoint
 MODEL = "deepseek-chat"
