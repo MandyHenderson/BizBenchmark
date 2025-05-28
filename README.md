@@ -13,7 +13,7 @@ Code and data for evaluating large language models on business decision-making, 
 ## 🔗 Dataset Access
 
 - **GitHub**: [https://github.com/MandyHenderson/BizBenchmark](https://github.com/MandyHenderson/BizBenchmark)
-- **Hugging Face**: [https://huggingface.co/datasets/MandyHenderson/BizBenchmark](https://huggingface.co/datasets/MandyHenderson/BizBenchmark)
+- **Hugging Face**: [https://huggingface.co/datasets/CatherineHao/BizBench](https://huggingface.co/datasets/CatherineHao/BizBench)
 
 ## 👋 Overview
 
