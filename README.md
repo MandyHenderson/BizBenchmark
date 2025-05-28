@@ -84,8 +84,8 @@ Clone and install:
 ```bash
 git clone https://github.com/MandyHenderson/BizBenchmark
 cd BizBenchmark
-cd LLMBench
 pip install -r requirements.txt
+cd LLMBench
 ```
 
 Configure your API keys in `model/model.py` and `evaluation.py`:
