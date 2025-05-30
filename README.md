@@ -37,14 +37,15 @@ BizBenchmark supports 8 question types:
 
 | Type | Parameter | Directory | Domain Files | Subcategories | Description |
 |------|-----------|-----------|--------------|---------------|-------------|
-| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | --- | Choose one correct answer from A/B/C/D |
-| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | --- | Choose one or more correct answers |
-| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | --- | True/False with justification |
-| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | --- | Complete missing information |
-| Numerical | `numerical` | `Numerical_QA/` | STAT | --- | Quantitative calculations |
-| Proof | `proof` | `Proof/` | STAT | --- | Mathematical derivations |
-| Table | `table` | `Table_QA/` | ECON, FIN, OM | --- | Data interpretation from tables |
-| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | Article, Report, Textbook | Open-ended analysis |
+| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | Choice (all domains) | Choose one correct answer from A/B/C/D |
+| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | Choice (all domains) | Choose one or more correct answers |
+| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | T/F (all domains) | True/False with justification |
+| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | QA (STAT only) | Complete missing information |
+| Numerical | `numerical` | `Numerical_QA/` | STAT | QA (STAT only) | Quantitative calculations |
+| Proof | `proof` | `Proof/` | STAT | QA (STAT only) | Mathematical derivations |
+| Table | `table` | `Table_QA/` | ECON, FIN, OM | QA (ECON, FIN, OM) | Data interpretation from tables |
+| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | QA: General (all), Financial News (ECON, FIN only) | Open-ended analysis |
+
 ## 📋 Data Format
 
 ### Single Choice Example
