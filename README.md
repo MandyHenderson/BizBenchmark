@@ -35,17 +35,16 @@ bizbench = load_dataset('MandyHenderson/BizBenchmark')
 
 BizBenchmark supports 8 question types:
 
-| Type | Parameter | Directory | Domain Files | Description |
-|------|-----------|-----------|--------------|-------------|
-| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | Choose one correct answer from A/B/C/D |
-| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | Choose one or more correct answers |
-| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | True/False with justification |
-| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | Complete missing information |
-| Numerical | `numerical` | `Numerical_QA/` | STAT | Quantitative calculations |
-| Proof | `proof` | `Proof/` | STAT | Mathematical derivations |
-| Table | `table` | `Table_QA/` | ECON, FIN, OM | Data interpretation from tables |
-| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | Open-ended analysis |
-
+| Type | Parameter | Directory | Domain Files | Subcategories | Description |
+|------|-----------|-----------|--------------|---------------|-------------|
+| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | --- | Choose one correct answer from A/B/C/D |
+| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | --- | Choose one or more correct answers |
+| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | --- | True/False with justification |
+| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | --- | Complete missing information |
+| Numerical | `numerical` | `Numerical_QA/` | STAT | --- | Quantitative calculations |
+| Proof | `proof` | `Proof/` | STAT | --- | Mathematical derivations |
+| Table | `table` | `Table_QA/` | ECON, FIN, OM | --- | Data interpretation from tables |
+| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | Article, Report, Textbook | Open-ended analysis |
 ## 📋 Data Format
 
 ### Single Choice Example
