@@ -31,18 +31,20 @@ bizbench = load_dataset('MandyHenderson/BizBenchmark')
 
 ## 🧪 Question Types
 
+**Four business domains**: Economics (ECON), Finance (FIN), Operations Management (OM), Statistics (STAT)
+
 BizBenchmark supports 8 question types:
 
-| Type | Parameter | Directory | Description |
-|------|-----------|-----------|-------------|
-| Single Choice | `single` | `Single_Choice/` | Choose one correct answer from A/B/C/D |
-| Multiple Choice | `multiple` | `Multiple_Choice/` | Choose one or more correct answers |
-| True/False | `tf` | `TF/` | True/False with justification |
-| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | Complete missing information |
-| Numerical | `numerical` | `Numerical_QA/` | Quantitative calculations |
-| Proof | `proof` | `Proof/` | Mathematical derivations |
-| Table | `table` | `Table_QA/` | Data interpretation from tables |
-| General | `general` | `General_QA/` | Open-ended analysis |
+| Type | Parameter | Directory | Domain Files | Description |
+|------|-----------|-----------|--------------|-------------|
+| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | Choose one correct answer from A/B/C/D |
+| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | Choose one or more correct answers |
+| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | True/False with justification |
+| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | Complete missing information |
+| Numerical | `numerical` | `Numerical_QA/` | STAT | Quantitative calculations |
+| Proof | `proof` | `Proof/` | STAT | Mathematical derivations |
+| Table | `table` | `Table_QA/` | ECON, FIN, OM | Data interpretation from tables |
+| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | Open-ended analysis |
 
 ## 📋 Data Format
 
