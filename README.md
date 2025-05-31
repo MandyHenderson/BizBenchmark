@@ -61,7 +61,6 @@ BizBenchmark question types organized by domain:
 | | Choice | Single Choice | `single` | `Single_Choice/` |
 | | | Multiple Choice | `multiple` | `Multiple_Choice/` |
 | | T/F | --- | `tf` | `TF/` |
-
 ## 📋 Data Format
 
 ### Single Choice Example
