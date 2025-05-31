@@ -13,7 +13,7 @@ Code and data for evaluating large language models on business decision-making, 
 ## 🔗 Dataset Access
 
 - **GitHub**: [https://github.com/MandyHenderson/BizBenchmark](https://github.com/MandyHenderson/BizBenchmark)
-- **Hugging Face**: [https://huggingface.co/datasets/CatherineHao/BizBench](https://huggingface.co/datasets/CatherineHao/BizBench)
+- **Hugging Face**: [https://huggingface.co/datasets/MandyHenderson/BizBenchmark](https://huggingface.co/datasets/MandyHenderson/BizBenchmark)
 
 ## 👋 Overview
 
@@ -33,18 +33,34 @@ bizbench = load_dataset('MandyHenderson/BizBenchmark')
 
 **Four business domains**: Economics (ECON), Finance (FIN), Operations Management (OM), Statistics (STAT)
 
-BizBenchmark supports 8 question types:
+BizBenchmark question types organized by domain:
 
-| Type | Parameter | Directory | Domain Files | Subcategories | Description |
-|------|-----------|-----------|--------------|---------------|-------------|
-| Single Choice | `single` | `Single_Choice/` | ECON, FIN, OM, STAT | Choice (all domains) | Choose one correct answer from A/B/C/D |
-| Multiple Choice | `multiple` | `Multiple_Choice/` | ECON, FIN, OM, STAT | Choice (all domains) | Choose one or more correct answers |
-| True/False | `tf` | `TF/` | ECON, FIN, OM, STAT | T/F (all domains) | True/False with justification |
-| Fill-in-the-Blank | `fill` | `Fill-in-the Blank/` | STAT | QA (STAT only) | Complete missing information |
-| Numerical | `numerical` | `Numerical_QA/` | STAT | QA (STAT only) | Quantitative calculations |
-| Proof | `proof` | `Proof/` | STAT | QA (STAT only) | Mathematical derivations |
-| Table | `table` | `Table_QA/` | ECON, FIN, OM | QA (ECON, FIN, OM) | Data interpretation from tables |
-| General | `general` | `General_QA/` | ECON, FIN, OM, STAT | QA: General (all), Financial News (ECON, FIN only) | Open-ended analysis |
+| Domain | Category | Subcategory | Parameter | Directory |
+|--------|----------|-------------|-----------|-----------|
+| **OM** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **Economics** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | | Financial News QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **Finance** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | | Financial News QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **Statistics** | QA | General QA | `general` | `General_QA/` |
+| | | Numerical QA | `numerical` | `Numerical_QA/` |
+| | | Proof | `proof` | `Proof/` |
+| | | Fill-in-the-blank | `fill` | `Fill-in-the Blank/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
 
 ## 📋 Data Format
 
@@ -87,7 +103,6 @@ Clone and install:
 git clone https://github.com/MandyHenderson/BizBenchmark
 cd BizBenchmark
 pip install -r requirements.txt
-cd LLMBench
 ```
 
 Configure your API keys in `model/model.py` and `evaluation.py`:
@@ -103,6 +118,7 @@ BASE_URL = "https://api.deepseek.com/v1"
 python main.py \
     --dataset_path ./dataset \
     --output_path ./result \
+    --domain ECON \
     --model deepseek-chat \
     --question_type single \
     --temperature 0.2 \
@@ -114,6 +130,7 @@ python main.py \
 python evaluation.py \
     --eval_path ./result \
     --out_path ./eval \
+    --domain ECON \
     --model deepseek-chat \
     --question_type single \
     --temperature 0.2 \
@@ -121,6 +138,7 @@ python evaluation.py \
 ```
 
 ### Parameters
+- `--domain`: Business domain (ECON, FIN, OM, STAT) - **Required**
 - `--model`: LLM model name
 - `--question_type`: One of `single`, `multiple`, `tf`, `fill`, `numerical`, `proof`, `table`, `general`
 - `--temperature`: Sampling temperature (0.0-2.0)
@@ -131,57 +149,40 @@ python evaluation.py \
 ### Inference Results
 ```
 result/
-└── {question_type}/                    # e.g., single, multiple, general
-    └── {model_name}/                   # e.g., deepseek-chat, gpt-4
-        └── tem{temperature}/           # e.g., tem0.2, tem0.7
-            └── top_k{top_p}/           # e.g., top_k0.95, top_k0.9
-                └── evaluation/
-                    ├── Single_Choice_ECON_eval.json
-                    ├── Single_Choice_FIN_eval.json
-                    ├── Single_Choice_OM_eval.json
-                    ├── Single_Choice_STAT_eval.json
-                    ├── Single_Choice_ECON_eval.jsonl
-                    ├── Single_Choice_FIN_eval.jsonl
-                    ├── Single_Choice_OM_eval.jsonl
-                    └── Single_Choice_STAT_eval.jsonl
+└── {domain}/                          # e.g., ECON, FIN, OM, STAT
+    └── {question_type}/                # e.g., single, multiple, general
+        └── {model_name}/               # e.g., deepseek-chat, gpt-4
+            └── tem{temperature}/       # e.g., tem0.2, tem0.7
+                └── top_k{top_p}/       # e.g., top_k0.95, top_k0.9
+                    └── evaluation/
+                        ├── Single_Choice_ECON_eval.json
+                        ├── Single_Choice_ECON_eval.jsonl
+                        └── ...
 ```
 
 ### Evaluation Results
 ```
 eval/
-└── {question_type}/                    # e.g., single, multiple, general
-    └── {model_name}/                   # e.g., deepseek-chat, gpt-4
-        └── tem{temperature}/           # e.g., tem0.2, tem0.7
-            └── top_k{top_p}/           # e.g., top_k0.95, top_k0.9
-                ├── Single_Choice_ECON/
-                │   ├── Single_Choice_ECON_evaluated_by_llm.json
-                │   ├── Single_Choice_ECON_evaluation_log.jsonl
-                │   └── summary/
-                │       └── Single_Choice_ECON_summary.json
-                ├── Single_Choice_FIN/
-                │   ├── Single_Choice_FIN_evaluated_by_llm.json
-                │   ├── Single_Choice_FIN_evaluation_log.jsonl
-                │   └── summary/
-                │       └── Single_Choice_FIN_summary.json
-                ├── Single_Choice_OM/
-                │   ├── Single_Choice_OM_evaluated_by_llm.json
-                │   ├── Single_Choice_OM_evaluation_log.jsonl
-                │   └── summary/
-                │       └── Single_Choice_OM_summary.json
-                └── Single_Choice_STAT/
-                    ├── Single_Choice_STAT_evaluated_by_llm.json
-                    ├── Single_Choice_STAT_evaluation_log.jsonl
-                    └── summary/
-                        └── Single_Choice_STAT_summary.json
+└── {domain}/                          # e.g., ECON, FIN, OM, STAT
+    └── {question_type}/                # e.g., single, multiple, general
+        └── {model_name}/               # e.g., deepseek-chat, gpt-4
+            └── tem{temperature}/       # e.g., tem0.2, tem0.7
+                └── top_k{top_p}/       # e.g., top_k0.95, top_k0.9
+                    ├── Single_Choice_ECON/
+                    │   ├── Single_Choice_ECON_evaluated_by_llm.json
+                    │   ├── Single_Choice_ECON_evaluation_log.jsonl
+                    │   └── summary/
+                    │       └── Single_Choice_ECON_summary.json
+                    └── ...
 ```
 
 ### Example Complete Path
 ```bash
 # Inference output
-result/single/deepseek-chat/tem0.2/top_k0.95/evaluation/Single_Choice_ECON_eval.json
+result/ECON/single/deepseek-chat/tem0.2/top_k0.95/evaluation/Single_Choice_ECON_eval.json
 
 # Evaluation output  
-eval/single/deepseek-chat/tem0.2/top_k0.95/Single_Choice_ECON/Single_Choice_ECON_evaluated_by_llm.json
+eval/ECON/single/deepseek-chat/tem0.2/top_k0.95/Single_Choice_ECON/Single_Choice_ECON_evaluated_by_llm.json
 ```
 
 ## 🔧 Configuration
@@ -227,13 +228,13 @@ Sample evaluation output:
 ### Quick evaluation:
 ```bash
 # Single domain
-python main.py --question_type single --model gpt-4
-python evaluation.py --question_type single --model gpt-4
+python main.py --domain ECON --question_type single --model gpt-4
+python evaluation.py --domain ECON --question_type single --model gpt-4
 
 # Multiple domains
-for qtype in single multiple general; do
-    python main.py --question_type $qtype --model gpt-4
-    python evaluation.py --question_type $qtype --model gpt-4
+for domain in ECON FIN OM STAT; do
+    python main.py --domain $domain --question_type single --model gpt-4
+    python evaluation.py --domain $domain --question_type single --model gpt-4
 done
 ```
 
@@ -241,8 +242,10 @@ done
 ```bash
 for temp in 0.1 0.2 0.5; do
     for model in gpt-4 deepseek-chat; do
-        python main.py --model $model --temperature $temp --question_type single
-        python evaluation.py --model $model --temperature $temp --question_type single
+        for domain in ECON FIN OM STAT; do
+            python main.py --domain $domain --model $model --temperature $temp --question_type single
+            python evaluation.py --domain $domain --model $model --temperature $temp --question_type single
+        done
     done
 done
 ```
