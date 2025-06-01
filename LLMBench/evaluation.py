@@ -1,3 +1,13 @@
+"""evaluation.py
+
+Asynchronously grades model outputs with an LLM-based grader.
+
+For each source JSON file the script produces:
+* a per-item log  → *_evaluation_log.jsonl
+* a fully evaluated JSON  → *_evaluated_by_llm.json
+* a summary report  → *_summary.json
+"""
+
 import asyncio
 import os
 import json
@@ -9,9 +19,7 @@ from tqdm import tqdm
 from json_repair import repair_json
 import argparse
 
-# -------------------------------------------
-# OpenAI client (or your custom client)
-# -------------------------------------------
+
 from openai import AsyncOpenAI
 
 API_KEY = "sk-****"  # Replace with your actual key or load securely
@@ -24,11 +32,9 @@ OUT_SUFFIX = "_evaluated_by_llm"
 LOG_SUFFIX = "_evaluation_log.jsonl"
 SUMMARY_SUFFIX = "_summary.json"
 
-# Tags used by the LLM Grader to determine correctness for summary statistics
 CORRECT_TAGS_FOR_LLM_GRADER = {"CORRECT"}
 
 
-# ------------------ OpenAI Client Setup ------------------
 client = AsyncOpenAI(
     api_key=API_KEY,
     base_url=BASE_URL,
@@ -42,6 +48,18 @@ def dbg(msg):
 
 
 async def load_json_with_repair(path: Path):
+    """Read a JSON file asynchronously and repair it if necessary.
+
+    Args:
+        path: File path to load.
+
+    Returns:
+        The parsed Python object (dict, list, etc.).
+
+    Raises:
+        json.JSONDecodeError: The file could not be parsed even after repair.
+    """
+
     async with aiofiles.open(path, 'r', encoding='utf-8') as f:
         text = await f.read()
     try:
@@ -63,6 +81,22 @@ async def write_json(path: Path, data):
 
 # ------------------ Candidate Answer Extraction Logic ------------------
 def extract_candidate_answer(record: dict) -> str:
+    """Extract the candidate answer string from one record.
+
+    Search order:
+        1. model_evaluation_result.model_raw_response
+        2. model_evaluation_result.model_answer
+        3. top-level model_answer or model_raw_response
+
+    JSON-formatted strings are repaired and parsed to locate an "answer" key.
+
+    Args:
+        record: Item dict from the evaluation JSON.
+
+    Returns:
+        A stripped answer string (may be empty).
+    """
+
     model_eval_res = record.get("model_evaluation_result")
     candidate = ""
 
@@ -150,6 +184,23 @@ def extract_candidate_answer(record: dict) -> str:
 
 # ------------------ LLM Grading Logic ------------------
 async def grade_one(processing_qid: str, question: str, gold_answer: str, candidate_ans: str) -> dict:
+    """Send one question/answer pair to the LLM grader and parse its verdict.
+
+    Args:
+        processing_qid: QID used by this script.
+        question: Question text.
+        gold_answer: Reference (gold) answer text.
+        candidate_ans: Model-generated answer to be graded.
+
+    Returns:
+        A dict containing keys such as
+            script_processing_qid
+            llm_grader_category
+            llm_grader_explanation
+            llm_echoed_qid
+            llm_grader_raw_response
+    """
+
     user_prompt = USER_TMPL.format(
         question=question or "<NO QUESTION PROVIDED>",
         gold_answer=gold_answer or "<NO GOLD ANSWER PROVIDED>",
@@ -238,6 +289,21 @@ async def grade_one(processing_qid: str, question: str, gold_answer: str, candid
 
 # ------------------ File Processing Logic ------------------
 async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, eval_output_root_path_obj: Path):
+    """Process a single source JSON file and write all output artefacts.
+
+    Steps:
+        1. Load and repair the JSON.
+        2. Skip items already graded (via the log file).
+        3. Concurrently call `grade_one` for pending items.
+        4. Append each grading result to the log and update statistics.
+        5. Write the updated JSON, log, and summary.
+
+    Args:
+        input_file_path_str: Path to the source JSON file.
+        root_dir_path_obj: Dataset root path (used for relativity checks).
+        eval_output_root_path_obj: Root directory where outputs are written.
+    """
+
     input_file_path = Path(input_file_path_str)
 
     try:
@@ -430,14 +496,23 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
 
 # ------------------ Main Orchestration Logic ------------------
 async def main(args):
+    """Walk the evaluation tree and schedule grading tasks.
+
+    Args:
+        args: Parsed argparse namespace with
+              eval_path, out_path, domain, model, question_type,
+              temperature, and top_p.
+    """
+
     eval_path = args.eval_path
     out_path = args.out_path
+    domain = args.domain
     model_name = args.model
     question_type = args.question_type
     temperature = args.temperature
     top_p = args.top_p
-    ROOT_DIR = os.path.join(eval_path, question_type, model_name, f'tem{temperature}', f'top_k{top_p}', 'evaluation')
-    EVALUATED_OUTPUT_ROOT_DIR = os.path.join(out_path, question_type, model_name, f'tem{temperature}', f'top_k{top_p}')
+    ROOT_DIR = os.path.join(eval_path, domain, question_type, model_name, f'tem{temperature}', f'top_k{top_p}', 'evaluation')
+    EVALUATED_OUTPUT_ROOT_DIR = os.path.join(out_path, domain, question_type, model_name, f'tem{temperature}', f'top_k{top_p}')
     root_dir = Path(ROOT_DIR)
     eval_output_root_dir = Path(EVALUATED_OUTPUT_ROOT_DIR)
 
@@ -463,7 +538,7 @@ async def main(args):
             json_files_to_process.append(json_file)
 
     if not json_files_to_process:
-        print(f"No JSON files found matching the expected structure: {ROOT_DIR}/<Q_Type>/<Model_Name>/*.json")
+        print(f"No JSON files found matching the expected structure: {ROOT_DIR}/*.json")
         return
 
     print(f"Found {len(json_files_to_process)} JSON files to process from '{ROOT_DIR}'.")
@@ -479,8 +554,9 @@ parser = argparse.ArgumentParser()
 if __name__ == "__main__":
     parser.add_argument('--eval_path', default='./result', type=str, help='Directory containing answers LLM generated')
     parser.add_argument('--out_path', default='./eval', type=str, help='Directory saving the evaluation result')
+    parser.add_argument('--domain', required=True, type=str, help='Business domain: (ECON, FIN, OM, STAT)')
     parser.add_argument('--model', default='deepseek-chat', type=str, help='Name of LLM model')
-    parser.add_argument('--question_type', default='tf', type=str, help='Type of chioce: (fill, general, multiple, numerical, proof, single, table, tf)')
+    parser.add_argument('--question_type', default='tf', type=str, help='Type of choice: (fill, general, multiple, numerical, proof, single, table, tf)')
     parser.add_argument('--temperature', default=0.2, type=float, help='temperature of the LLM')
     parser.add_argument('--top_p', default=0.95, type=float, help='top of the LLM')
     args = parser.parse_args()
