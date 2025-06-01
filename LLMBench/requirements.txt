@@ -1,6 +1,0 @@
-openai>=1.0.0
-tqdm>=4.64.0
-json-repair>=0.7.0
-aiofiles>=22.1.0
-pathlib2>=2.3.7
-asyncio-throttle>=1.0.2 
