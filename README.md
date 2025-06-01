@@ -1,0 +1,269 @@
+# 📊 BizBenchmark
+
+<p align="center">
+    <a href="https://www.python.org/">
+        <img alt="Build" src="https://img.shields.io/badge/Python-3.8+-1f425f.svg?color=purple">
+    </a>
+</p>
+
+---
+
+Code and data for evaluating large language models on business decision-making, analysis, and instruction.
+
+## 🔗 Dataset Access
+
+- **GitHub**: [https://github.com/MandyHenderson/BizBenchmark](https://github.com/MandyHenderson/BizBenchmark)
+- **Hugging Face**: [https://huggingface.co/datasets/MandyHenderson/BizBenchmark](https://huggingface.co/datasets/MandyHenderson/BizBenchmark)
+
+## 👋 Overview
+
+BizBenchmark is a comprehensive benchmark for evaluating large language models in applied business contexts across four domains: Economics (ECON), Finance (FIN), Operations Management (OM), and Statistics (STAT).
+
+The benchmark consists of over 31,228 high-quality examples covering a wide range of topics and task formats, designed to assess both theoretical understanding and practical reasoning. BizBenchmark provides a robust framework for evaluating LLMs' capabilities in business decision-making, analysis, and instruction.
+
+Given a *business question* and *context*, a language model is tasked with generating an *answer* that demonstrates business reasoning capabilities.
+
+To access BizBenchmark, copy and run the following code:
+```python
+from datasets import load_dataset
+bizbench = load_dataset('MandyHenderson/BizBenchmark')
+```
+
+## 🧪 Question Types
+
+**Four business domains**: Economics (ECON), Finance (FIN), Operations Management (OM), Statistics (STAT)
+
+BizBenchmark question types organized by domain:
+
+| Domain | Category | Subcategory | Parameter | Directory |
+|--------|----------|-------------|-----------|-----------|
+| **OM** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **ECON** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | | Financial News QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **FIN** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
+| | | Financial News QA | `general` | `General_QA/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+| **STAT** | QA | General QA | `general` | `General_QA/` |
+| | | Numerical QA | `numerical` | `Numerical_QA/` |
+| | | Proof | `proof` | `Proof/` |
+| | | Fill-in-the-blank | `fill` | `Fill-in-the Blank/` |
+| | Choice | Single Choice | `single` | `Single_Choice/` |
+| | | Multiple Choice | `multiple` | `Multiple_Choice/` |
+| | T/F | --- | `tf` | `TF/` |
+## 📋 Data Format
+
+### Single Choice Example
+```json
+{
+  "qid": "financial-single-choice-123",
+  "question": "What is the primary goal of portfolio diversification?",
+  "gold_answer": "A",
+  "options": ["A) Risk reduction", "B) Return maximization", "C) Cost minimization", "D) Tax optimization"],
+  "question_context": "Portfolio theory suggests..."
+}
+```
+
+### General Q&A Example
+```json
+{
+  "qid": "Economic-Report-662-0-0-3",
+  "question": "Calculate the implied valuation of the IPO given the conditions.",
+  "gold_answer": "The implied valuation depends on shares offered and price per share...",
+  "question_context": "Conference call transcript discussing IPO details..."
+}
+```
+
+### Table Analysis Example
+```json
+{
+  "qid": "econ-table-3619-2",
+  "question": "Test whether the reform effect is statistically significant at 1% level.",
+  "gold_answer": "t-statistic = 0.040/0.005 = 8.0. Since 8.0 > 2.576, reject null hypothesis...",
+  "formula_context": "OLS regression: Y = α + β Reform + controls",
+  "table_html": "<table>...</table>"
+}
+```
+
+## 🚀 Set Up
+
+Clone and install:
+```bash
+git clone https://github.com/MandyHenderson/BizBenchmark
+cd BizBenchmark
+pip install -r requirements.txt
+```
+
+Configure your API keys in `model/model.py` and `evaluation.py`:
+```python
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.deepseek.com/v1"
+```
+
+## 💽 Usage
+
+### Run Inference
+```bash
+python main.py \
+    --dataset_path ./dataset \
+    --output_path ./result \
+    --domain ECON \
+    --model deepseek-chat \
+    --question_type single \
+    --temperature 0.2 \
+    --top_p 0.95
+```
+
+### Run Evaluation
+```bash
+python evaluation.py \
+    --eval_path ./result \
+    --out_path ./eval \
+    --domain ECON \
+    --model deepseek-chat \
+    --question_type single \
+    --temperature 0.2 \
+    --top_p 0.95
+```
+
+### Parameters
+- `--domain`: Business domain (ECON, FIN, OM, STAT) - **Required**
+- `--model`: LLM model name
+- `--question_type`: One of `single`, `multiple`, `tf`, `fill`, `numerical`, `proof`, `table`, `general`
+- `--temperature`: Sampling temperature (0.0-2.0)
+- `--top_p`: Nucleus sampling (0.0-1.0)
+
+## 📋 Output Structure
+
+### Inference Results
+```
+result/
+└── {domain}/                          # e.g., ECON, FIN, OM, STAT
+    └── {question_type}/                # e.g., single, multiple, general
+        └── {model_name}/               # e.g., deepseek-chat, gpt-4
+            └── tem{temperature}/       # e.g., tem0.2, tem0.7
+                └── top_k{top_p}/       # e.g., top_k0.95, top_k0.9
+                    └── evaluation/
+                        ├── Single_Choice_ECON_eval.json
+                        ├── Single_Choice_ECON_eval.jsonl
+                        └── ...
+```
+
+### Evaluation Results
+```
+eval/
+└── {domain}/                          # e.g., ECON, FIN, OM, STAT
+    └── {question_type}/                # e.g., single, multiple, general
+        └── {model_name}/               # e.g., deepseek-chat, gpt-4
+            └── tem{temperature}/       # e.g., tem0.2, tem0.7
+                └── top_k{top_p}/       # e.g., top_k0.95, top_k0.9
+                    ├── Single_Choice_ECON/
+                    │   ├── Single_Choice_ECON_evaluated_by_llm.json
+                    │   ├── Single_Choice_ECON_evaluation_log.jsonl
+                    │   └── summary/
+                    │       └── Single_Choice_ECON_summary.json
+                    └── ...
+```
+
+### Example Complete Path
+```bash
+# Inference output
+result/ECON/single/deepseek-chat/tem0.2/top_k0.95/evaluation/Single_Choice_ECON_eval.json
+
+# Evaluation output  
+eval/ECON/single/deepseek-chat/tem0.2/top_k0.95/Single_Choice_ECON/Single_Choice_ECON_evaluated_by_llm.json
+```
+
+## 🔧 Configuration
+
+### Concurrency
+Adjust in `model/model.py`:
+```python
+MAX_WORKERS = 1  # Increase based on API limits
+```
+
+Adjust in `evaluation.py`:
+```python
+MAX_CONCURRENCY = 700  # Adjust based on API limits
+```
+
+### Resume
+The benchmark automatically resumes from checkpoints. Simply re-run the same command.
+
+### Custom Prompts
+Edit templates in `utils/prompt.py` for different question types.
+
+## 📊 Results
+
+Sample evaluation output:
+```json
+{
+  "total_items_successfully_graded_by_llm_grader": 150,
+  "items_graded_as_correct_by_llm_grader": 127,
+  "accuracy_according_to_llm_grader": 0.8467
+}
+```
+
+## 🛠️ Troubleshooting
+
+**API rate limits**: Reduce `MAX_WORKERS` and `MAX_CONCURRENCY`
+
+**JSON errors**: Automatic repair via `json-repair` library
+
+**Resume issues**: Check that parameters match exactly between inference and evaluation
+
+## 📈 Example Workflows
+
+### Quick evaluation:
+```bash
+# Single domain
+python main.py --domain ECON --question_type single --model gpt-4
+python evaluation.py --domain ECON --question_type single --model gpt-4
+
+# Multiple domains
+for domain in ECON FIN OM STAT; do
+    python main.py --domain $domain --question_type single --model gpt-4
+    python evaluation.py --domain $domain --question_type single --model gpt-4
+done
+```
+
+### Parameter sweep:
+```bash
+for temp in 0.1 0.2 0.5; do
+    for model in gpt-4 deepseek-chat; do
+        for domain in ECON FIN OM STAT; do
+            python main.py --domain $domain --model $model --temperature $temp --question_type single
+            python evaluation.py --domain $domain --model $model --temperature $temp --question_type single
+        done
+    done
+done
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+1. Fork the repository
+2. Create a feature branch  
+3. Submit a pull request
+
+For dataset questions, see the main BizBenchmark repository.
+
+---
+
+**Architecture:**
+- `main.py`: Command-line interface
+- `model/model.py`: LLM inference with concurrent processing
+- `evaluation.py`: LLM-based grading
+- `dataloader/dataloader.py`: Data loading with resume
+- `utils/prompt.py`: Question-specific prompts
+- `utils/utils.py`: Utility functions 
