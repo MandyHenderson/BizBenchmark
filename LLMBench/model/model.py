@@ -49,7 +49,7 @@ from json_repair import repair_json
 MAX_WORKERS = 1  # ThreadPool size. Increase cautiously; many providers rate‑limit.
 MAX_LLM_RETRIES = 3  # Not used in this snippet but reserved for exponential‑backoff logic.
 LLM_RETRY_DELAY = 10  # Seconds between retries when 503 / rate‑limit occurs.
-MAX_TOKENS_FOR_JSON = 60  # Max tokens requested from the LLM API.
+MAX_TOKENS_FOR_JSON = 4096  # Max tokens requested from the LLM API.
 UPSTREAM_SATURATION_KEYWORD = "Saturation Detected"  # Vendor‑specific flag to halt batch.
 
 # !!! Replace with **your** key, or load from environment / vault in production.
