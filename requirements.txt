@@ -3,4 +3,10 @@ tqdm>=4.64.0
 json-repair>=0.7.0
 aiofiles>=22.1.0
 pathlib2>=2.3.7
-asyncio-throttle>=1.0.2 
+asyncio-throttle>=1.0.2
+torch>=1.13.0
+transformers>=4.20.0
+deepspeed>=0.8.0
+accelerate>=0.15.0
+aiohttp
+requests 

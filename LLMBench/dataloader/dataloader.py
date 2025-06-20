@@ -134,11 +134,21 @@ def load_questions(
                             f"{line_num + 1} in {eval_jsonl_path.name}"
                         )
 
+            # 检查文件完整性：如果已处理的问题数等于源文件问题数，才完全跳过
+            total_source_questions = len(all_question_objects_from_file)
+            total_processed_questions = len(processed_qids)
+            
             print(
                 f"    Loaded {len(previously_processed_records)} records from "
                 f"{eval_jsonl_path.name} "
-                f"({len(processed_qids)} unique valid QIDs used for resume)."
+                f"({total_processed_questions} unique valid QIDs used for resume)."
             )
+            
+            # 完整性检查
+            if total_processed_questions == total_source_questions:
+                print(f"    ✅ 文件已完成处理 ({total_processed_questions}/{total_source_questions})")
+            else:
+                print(f"    ⚠️  文件未完成处理 ({total_processed_questions}/{total_source_questions})，将继续处理剩余问题")
         except Exception as e:
             print(
                 f"    [Error] Failed to read/parse {eval_jsonl_path.name} for "

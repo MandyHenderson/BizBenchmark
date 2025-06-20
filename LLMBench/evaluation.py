@@ -1,11 +1,29 @@
-"""evaluation.py
+"""LLM-based evaluation system for BizBenchmark framework.
 
-Asynchronously grades model outputs with an LLM-based grader.
+This module provides asynchronous evaluation of model outputs using an LLM-based grader.
+It supports both API-based and local model evaluation modes, processing JSON files
+containing model responses and generating comprehensive evaluation reports.
 
-For each source JSON file the script produces:
-* a per-item log  → *_evaluation_log.jsonl
-* a fully evaluated JSON  → *_evaluated_by_llm.json
-* a summary report  → *_summary.json
+The evaluation system processes each response through an LLM grader that categorizes
+answers as CORRECT, INCORRECT, PARTIALLY_CORRECT, etc., and generates detailed
+statistics and accuracy metrics.
+
+Example:
+    API mode evaluation:
+        $ python evaluation.py --domain ECON --question_type single --model_type api
+
+    Local mode evaluation:
+        $ python evaluation.py --domain ECON --question_type single --model_type local
+
+Typical usage example:
+    import asyncio
+    args = parse_arguments()
+    asyncio.run(main(args))
+
+For each source JSON file, the script produces:
+    - Per-item evaluation log → *_evaluation_log.jsonl
+    - Fully evaluated JSON → *_evaluated_by_llm.json  
+    - Summary report → *_summary.json
 """
 
 import asyncio
@@ -22,7 +40,16 @@ import argparse
 
 from openai import AsyncOpenAI
 
-API_KEY = "sk-****"  # Replace with your actual key or load securely
+# Import local model support
+try:
+    from model.local_model import LocalModelError, local_chat_completion_async, check_local_model_health
+except ImportError:
+    print("Warning: Unable to import local model support, only API mode is supported")
+    LocalModelError = Exception
+    local_chat_completion_async = None
+    check_local_model_health = lambda: False
+
+API_KEY = "sk-"  # Replace with your actual key or load securely
 BASE_URL = "https://api.deepseek.com/v1"  # Verify/adjust if using a different provider or endpoint
 MODEL = "deepseek-chat"
 
@@ -34,32 +61,66 @@ SUMMARY_SUFFIX = "_summary.json"
 
 CORRECT_TAGS_FOR_LLM_GRADER = {"CORRECT"}
 
+# Global client variables
+api_client = None
+local_model_url = "http://localhost:8000"  # Local model service address
 
-client = AsyncOpenAI(
-    api_key=API_KEY,
-    base_url=BASE_URL,
-    timeout=60
-)
+
+def get_evaluation_client(model_type: str = "api"):
+    """Gets appropriate evaluation client based on model type.
+
+    Args:
+        model_type (str): Type of model client ('api' or 'local').
+
+    Returns:
+        AsyncOpenAI or None: Client instance for API mode, None for local mode.
+
+    Raises:
+        ValueError: If model_type is not supported.
+    """
+    global api_client
+    
+    if model_type == "api":
+        if api_client is None:
+            api_client = AsyncOpenAI(
+                api_key=API_KEY,
+                base_url=BASE_URL,
+                timeout=60
+            )
+        return api_client
+    elif model_type == "local":
+        # Local model uses function calls, no client object needed
+        return None
+    else:
+        raise ValueError(f"Unsupported model type: {model_type}")
+
+
+# Keep backward compatibility
+client = None
 
 
 # ------------------ Utility Functions ------------------
 def dbg(msg):
+    """Prints debug message through tqdm for progress bar compatibility.
+
+    Args:
+        msg: Message to print.
+    """
     tqdm.write(str(msg))
 
 
 async def load_json_with_repair(path: Path):
-    """Read a JSON file asynchronously and repair it if necessary.
+    """Reads and repairs JSON file asynchronously if necessary.
 
     Args:
-        path: File path to load.
+        path (Path): File path to load.
 
     Returns:
-        The parsed Python object (dict, list, etc.).
+        dict or list: Parsed Python object from JSON.
 
     Raises:
-        json.JSONDecodeError: The file could not be parsed even after repair.
+        json.JSONDecodeError: If file cannot be parsed even after repair.
     """
-
     async with aiofiles.open(path, 'r', encoding='utf-8') as f:
         text = await f.read()
     try:
@@ -75,28 +136,34 @@ async def load_json_with_repair(path: Path):
 
 
 async def write_json(path: Path, data):
+    """Writes data to JSON file asynchronously.
+
+    Args:
+        path (Path): Output file path.
+        data: Data to serialize as JSON.
+    """
     async with aiofiles.open(path, 'w', encoding='utf-8') as f:
         await f.write(json.dumps(data, ensure_ascii=False, indent=2))
 
 
 # ------------------ Candidate Answer Extraction Logic ------------------
 def extract_candidate_answer(record: dict) -> str:
-    """Extract the candidate answer string from one record.
+    """Extracts candidate answer string from evaluation record.
 
-    Search order:
+    Searches for answer in the following priority order:
         1. model_evaluation_result.model_raw_response
         2. model_evaluation_result.model_answer
         3. top-level model_answer or model_raw_response
 
-    JSON-formatted strings are repaired and parsed to locate an "answer" key.
+    JSON-formatted strings are automatically repaired and parsed to locate
+    an "answer" key.
 
     Args:
-        record: Item dict from the evaluation JSON.
+        record (dict): Item dict from the evaluation JSON containing model response.
 
     Returns:
-        A stripped answer string (may be empty).
+        str: Extracted answer string (may be empty if no valid answer found).
     """
-
     model_eval_res = record.get("model_evaluation_result")
     candidate = ""
 
@@ -183,24 +250,28 @@ def extract_candidate_answer(record: dict) -> str:
 
 
 # ------------------ LLM Grading Logic ------------------
-async def grade_one(processing_qid: str, question: str, gold_answer: str, candidate_ans: str) -> dict:
-    """Send one question/answer pair to the LLM grader and parse its verdict.
+async def grade_one(processing_qid: str, question: str, gold_answer: str, candidate_ans: str, model_type: str = "api") -> dict:
+    """Sends one question/answer pair to LLM grader and parses verdict.
+
+    This function handles both API and local model grading, with automatic retry
+    logic and comprehensive error handling.
 
     Args:
-        processing_qid: QID used by this script.
-        question: Question text.
-        gold_answer: Reference (gold) answer text.
-        candidate_ans: Model-generated answer to be graded.
+        processing_qid (str): Unique identifier for this evaluation item.
+        question (str): The original question text.
+        gold_answer (str): Reference (gold standard) answer.
+        candidate_ans (str): Model-generated answer to be evaluated.
+        model_type (str): Grading model type ('api' or 'local').
 
     Returns:
-        A dict containing keys such as
-            script_processing_qid
-            llm_grader_category
-            llm_grader_explanation
-            llm_echoed_qid
-            llm_grader_raw_response
+        dict: Evaluation result containing:
+            - script_processing_qid: QID used by this script
+            - llm_grader_category: Category assigned by LLM (CORRECT, INCORRECT, etc.)
+            - llm_grader_explanation: Explanation from LLM grader
+            - llm_echoed_qid: QID echoed back by LLM
+            - llm_grader_raw_response: Raw response from LLM
+            - model_type: Type of model used for grading
     """
-
     user_prompt = USER_TMPL.format(
         question=question or "<NO QUESTION PROVIDED>",
         gold_answer=gold_answer or "<NO GOLD ANSWER PROVIDED>",
@@ -212,29 +283,70 @@ async def grade_one(processing_qid: str, question: str, gold_answer: str, candid
     # The LLM is also asked to echo a 'qid' in its response.
     evaluation_result = {
         "script_processing_qid": processing_qid,  # QID used by this script for this item
-        "llm_grader_input_prompt_user": user_prompt  # For debugging
+        "llm_grader_input_prompt_user": user_prompt,  # For debugging
+        "model_type": model_type  # Record the model type used
     }
     llm_response_obj = None
 
     for attempt in range(3):
         try:
-            llm_response_obj = await client.chat.completions.create(
-                model=MODEL,
-                messages=[
+            if model_type == "local":
+                # Use local model for evaluation
+                if local_chat_completion_async is None:
+                    raise LocalModelError("Local model functionality not available")
+                
+                messages = [
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.0
-            )
+                ]
+                
+                response_data = await local_chat_completion_async(
+                    messages=messages,
+                    model=MODEL,  # Local model name
+                    temperature=0.0,
+                    top_p=0.9,
+                    max_tokens=512
+                )
+                
+                # Mock OpenAI response format
+                class MockChoice:
+                    def __init__(self, content):
+                        self.message = MockMessage(content)
+                
+                class MockMessage:
+                    def __init__(self, content):
+                        self.content = content
+                
+                class MockResponse:
+                    def __init__(self, response_data):
+                        if "choices" in response_data and response_data["choices"]:
+                            content = response_data["choices"][0].get("message", {}).get("content", "")
+                        else:
+                            content = ""
+                        self.choices = [MockChoice(content)]
+                
+                llm_response_obj = MockResponse(response_data)
+                
+            else:
+                # Use API mode
+                current_client = get_evaluation_client(model_type)
+                llm_response_obj = await current_client.chat.completions.create(
+                    model=MODEL,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    temperature=0.0
+                )
             break  # Success
-        except Exception as e:
-            dbg(f"API Error (Attempt {attempt + 1}/3) for QID={processing_qid}: {e}")
+        except (LocalModelError, Exception) as e:
+            dbg(f"{model_type.upper()} Error (Attempt {attempt + 1}/3) for QID={processing_qid}: {e}")
             if attempt < 2:
                 await asyncio.sleep(1 + attempt * 2)
             else:
-                evaluation_result["llm_grader_category"] = "API_ERROR"
-                evaluation_result["llm_grader_explanation"] = f"API request failed after 3 retries: {str(e)}"
+                evaluation_result["llm_grader_category"] = f"{model_type.upper()}_ERROR"
+                evaluation_result["llm_grader_explanation"] = f"{model_type} request failed after 3 retries: {str(e)}"
                 return evaluation_result
 
     if not llm_response_obj or not llm_response_obj.choices or not llm_response_obj.choices[0].message or not \
@@ -288,20 +400,30 @@ async def grade_one(processing_qid: str, question: str, gold_answer: str, candid
 
 
 # ------------------ File Processing Logic ------------------
-async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, eval_output_root_path_obj: Path):
-    """Process a single source JSON file and write all output artefacts.
+async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, eval_output_root_path_obj: Path, domain: str, question_type: str, model_name: str, model_type: str = "api"):
+    """Processes a single source JSON file and generates evaluation artifacts.
 
-    Steps:
-        1. Load and repair the JSON.
-        2. Skip items already graded (via the log file).
-        3. Concurrently call `grade_one` for pending items.
-        4. Append each grading result to the log and update statistics.
-        5. Write the updated JSON, log, and summary.
+    This function orchestrates the complete evaluation workflow for one input file:
+    1. Loads and repairs the JSON file containing model responses
+    2. Checks for previously completed evaluations via log file
+    3. Concurrently evaluates pending items using LLM grader
+    4. Updates statistics and generates comprehensive reports
+    5. Writes evaluation results, logs, and summary files
 
     Args:
-        input_file_path_str: Path to the source JSON file.
-        root_dir_path_obj: Dataset root path (used for relativity checks).
-        eval_output_root_path_obj: Root directory where outputs are written.
+        input_file_path_str (str): Path to the source JSON file containing model responses.
+        root_dir_path_obj (Path): Dataset root directory for relative path calculations.
+        eval_output_root_path_obj (Path): Root directory for evaluation outputs.
+        domain (str): Business domain (ECON, FIN, OM, STAT).
+        question_type (str): Question type identifier.
+        model_name (str): Name of the evaluated model.
+        model_type (str): Evaluation model type ('api' or 'local').
+
+    Note:
+        Creates three output files per input:
+        - *_evaluated_by_llm.json: Complete evaluation results
+        - *_evaluation_log.jsonl: Per-item evaluation logs
+        - *_summary.json: Aggregated statistics and accuracy metrics
     """
 
     input_file_path = Path(input_file_path_str)
@@ -309,9 +431,9 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
     try:
         relative_path_from_root = input_file_path.relative_to(root_dir_path_obj)
 
-        q_type_folder_name = relative_path_from_root.parts[0]
-        model_name_folder = relative_path_from_root.parts[1]
-        original_file_full_name = relative_path_from_root.parts[5]
+        # For the path structure: evaluation/filename.json
+        # We need to extract metadata from the main() function parameters instead
+        original_file_full_name = relative_path_from_root.parts[-1]  # Get the filename
         original_file_stem = Path(original_file_full_name).stem
         original_file_suffix = Path(original_file_full_name).suffix
 
@@ -326,7 +448,7 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
         base_output_dir_for_this_file.mkdir(parents=True, exist_ok=True)
         summary_specific_output_dir.mkdir(parents=True, exist_ok=True)
     except OSError as e:
-        dbg(f"Error creating output directories for '{original_file_stem}' (Type: {q_type_folder_name}, Model: {model_name_folder}): {e}")
+        dbg(f"Error creating output directories for '{original_file_stem}' (Type: {question_type}, Model: {model_name}): {e}")
         return
 
     output_json_path = base_output_dir_for_this_file / (original_file_stem + OUT_SUFFIX + original_file_suffix)
@@ -344,7 +466,7 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
 
     evaluations_from_log = {}  # Stores full evaluation objects from log
     if log_jsonl_path.exists():
-        dbg(f"Log file found for '{original_file_stem}' (Type: {q_type_folder_name}, Model: {model_name_folder}). Loading from: {log_jsonl_path.name}")
+        dbg(f"Log file found for '{original_file_stem}' (Type: {question_type}, Model: {model_name}). Loading from: {log_jsonl_path.name}")
         try:
             async with aiofiles.open(log_jsonl_path, "r", encoding="utf-8") as log_f:
                 line_num = 0
@@ -379,7 +501,7 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
 
     for idx, current_record_dict in enumerate(original_records_list):
         if not isinstance(current_record_dict, dict):
-            dbg(f"Warning: Item at index {idx} in '{original_file_full_name}' (Type: {q_type_folder_name}, Model: {model_name_folder}) is not a dict. Skipping.")
+            dbg(f"Warning: Item at index {idx} in '{original_file_full_name}' (Type: {question_type}, Model: {model_name}) is not a dict. Skipping.")
             if is_list_input:
                 final_output_records_list.append(
                     {"error": "Invalid item format, not a dictionary", "original_index": idx,
@@ -389,7 +511,7 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
         # This is the QID used by the script to track this item for grading.
         script_instance_processing_qid = current_record_dict.get("qid")
         if not script_instance_processing_qid:
-            script_instance_processing_qid = f"{original_file_stem}_{model_name_folder}_autogen_{idx}"
+            script_instance_processing_qid = f"{original_file_stem}_{model_name}_autogen_{idx}"
             current_record_dict[
                 "qid_autogenerated_for_grading"] = script_instance_processing_qid  # Mark if QID was generated
 
@@ -412,11 +534,11 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
                 (current_record_dict, script_instance_processing_qid)
             )
 
-    progress_bar_desc = f"Grading {q_type_folder_name}/{model_name_folder}/{original_file_stem}"
+    progress_bar_desc = f"Grading {question_type}/{model_name}/{original_file_stem}"
     if not tasks_for_llm_grading:
-        dbg(f"No new records require LLM grading for '{original_file_full_name}' (Type: {q_type_folder_name}, Model: {model_name_folder}).")
+        dbg(f"No new records require LLM grading for '{original_file_full_name}' (Type: {question_type}, Model: {model_name}).")
     else:
-        dbg(f"LLM Grading {len(tasks_for_llm_grading)} new/pending records for '{original_file_full_name}' (Type: {q_type_folder_name}, Model: {model_name_folder}).")
+        dbg(f"LLM Grading {len(tasks_for_llm_grading)} new/pending records for '{original_file_full_name}' (Type: {question_type}, Model: {model_name}).")
 
         async with aiofiles.open(log_jsonl_path, 'a', encoding='utf-8') as log_f_append:
             pbar = tqdm(total=len(tasks_for_llm_grading), desc=progress_bar_desc, unit="item", leave=False)
@@ -431,7 +553,7 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
 
                     # llm_full_evaluation_result is the dict returned by grade_one
                     llm_full_evaluation_result = await grade_one(qid_for_grading_script, question_text,
-                                                                 gold_answer_text, candidate_answer)
+                                                                 gold_answer_text, candidate_answer, model_type)
 
                     # Attach the entire LLM evaluation object under "llm_evaluation" key
                     record_ref_to_update["llm_evaluation"] = llm_full_evaluation_result
@@ -478,8 +600,8 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
     summary_data = {
         "source_input_file_full_name": original_file_full_name,
         "source_input_file_stem": original_file_stem,
-        "question_type_folder": q_type_folder_name,
-        "model_name_from_path": model_name_folder,
+        "question_type_folder": question_type,
+        "model_name_from_path": model_name,
         "total_items_in_source_file": len(original_records_list),
         "total_items_successfully_graded_by_llm_grader_this_run": total_items_successfully_graded,
         "items_with_api_error_this_run": api_error_count_this_run,
@@ -496,12 +618,29 @@ async def process_one_file(input_file_path_str: str, root_dir_path_obj: Path, ev
 
 # ------------------ Main Orchestration Logic ------------------
 async def main(args):
-    """Walk the evaluation tree and schedule grading tasks.
+    """Main orchestration function for evaluation workflow.
+
+    This function coordinates the complete evaluation process:
+    1. Validates input directories and parameters
+    2. Initializes appropriate evaluation client (API or local)
+    3. Discovers JSON files to process
+    4. Orchestrates concurrent evaluation of all files
+    5. Reports completion status and output locations
 
     Args:
-        args: Parsed argparse namespace with
-              eval_path, out_path, domain, model, question_type,
-              temperature, and top_p.
+        args (argparse.Namespace): Parsed command-line arguments containing:
+            - eval_path (str): Directory containing model evaluation results
+            - out_path (str): Output directory for evaluation reports
+            - domain (str): Business domain to evaluate
+            - model (str): Model name
+            - question_type (str): Question type to evaluate
+            - temperature (float): Temperature parameter used in inference
+            - top_p (float): Top-p parameter used in inference
+            - model_type (str): Evaluation model type ('api' or 'local')
+
+    Note:
+        For local mode, verifies model health before processing.
+        Automatically creates output directories as needed.
     """
 
     eval_path = args.eval_path
@@ -511,10 +650,25 @@ async def main(args):
     question_type = args.question_type
     temperature = args.temperature
     top_p = args.top_p
+    model_type = getattr(args, 'model_type', 'api')  # Default to API mode
+    
     ROOT_DIR = os.path.join(eval_path, domain, question_type, model_name, f'tem{temperature}', f'top_k{top_p}', 'evaluation')
     EVALUATED_OUTPUT_ROOT_DIR = os.path.join(out_path, domain, question_type, model_name, f'tem{temperature}', f'top_k{top_p}')
     root_dir = Path(ROOT_DIR)
     eval_output_root_dir = Path(EVALUATED_OUTPUT_ROOT_DIR)
+
+    # Initialize global client for backward compatibility
+    global client
+    client = get_evaluation_client(model_type)
+    
+    # If using local model, check health status first
+    if model_type == "local":
+        if not check_local_model_health():
+            print(f"❌ Local model service unavailable, please check if local model service is running properly")
+            print(f"   Expected service address: {local_model_url}")
+            return
+        else:
+            print(f"✅ Local model service connection normal (evaluation mode)")
 
     if not root_dir.is_dir():
         print(f"ERROR: Input ROOT_DIR '{ROOT_DIR}' does not exist or is not a directory.")
@@ -542,10 +696,15 @@ async def main(args):
         return
 
     print(f"Found {len(json_files_to_process)} JSON files to process from '{ROOT_DIR}'.")
+    print(f"Evaluation model type: {model_type}")
     print(f"Outputs will be saved under '{eval_output_root_dir}'.")
 
+    # Create wrapper function for process_one_file to pass model_type
+    async def process_file_with_model_type(file_path_obj):
+        return await process_one_file(str(file_path_obj), root_dir, eval_output_root_dir, domain, question_type, model_name, model_type)
+
     for file_path_obj in tqdm(json_files_to_process, desc="Overall Progress (Files)", unit="file"):
-        await process_one_file(str(file_path_obj), eval_path, eval_output_root_dir)
+        await process_file_with_model_type(file_path_obj)
 
     print("\nAll processing finished.")
     print(f"Check '{eval_output_root_dir}' for evaluation outputs, logs, and summaries.")
@@ -559,5 +718,6 @@ if __name__ == "__main__":
     parser.add_argument('--question_type', default='tf', type=str, help='Type of choice: (fill, general, multiple, numerical, proof, single, table, tf)')
     parser.add_argument('--temperature', default=0.2, type=float, help='temperature of the LLM')
     parser.add_argument('--top_p', default=0.95, type=float, help='top of the LLM')
+    parser.add_argument('--model_type', default='api', type=str, choices=['api', 'local'], help='Model type: api for OpenAI-like API, local for local deployed model')
     args = parser.parse_args()
     asyncio.run(main(args))

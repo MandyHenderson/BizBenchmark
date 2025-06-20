@@ -49,11 +49,11 @@ from json_repair import repair_json
 MAX_WORKERS = 1  # ThreadPool size. Increase cautiously; many providers rate‑limit.
 MAX_LLM_RETRIES = 3  # Not used in this snippet but reserved for exponential‑backoff logic.
 LLM_RETRY_DELAY = 10  # Seconds between retries when 503 / rate‑limit occurs.
-MAX_TOKENS_FOR_JSON = 4096  # Max tokens requested from the LLM API.
+MAX_TOKENS_FOR_JSON = 512  # Max tokens requested from the LLM API.
 UPSTREAM_SATURATION_KEYWORD = "Saturation Detected"  # Vendor‑specific flag to halt batch.
 
 # !!! Replace with **your** key, or load from environment / vault in production.
-API_KEY = "sk-****"
+API_KEY = "sk-"
 BASE_URL = "https://api.deepseek.com/v1"  # Might need adjustment for different hosts.
 
 client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
@@ -196,7 +196,7 @@ def process_directory(
 
                         except Exception as exc_task:
                             # Catch‑all: log and insert placeholder so downstream
-                            # scripts don’t crash on missing entries.
+                            # scripts don't crash on missing entries.
                             if progress_bar:
                                 progress_bar.write(
                                     f"[ERROR] QID '{qid_for_log}' (Model: {model_name}, Temp: {temperature}, "
@@ -521,7 +521,7 @@ def process_question_item(
     """
 
     llm_result = call_llm(qobj, llm_model, question_type, temperature, top_p)
-    processed_record = dict(qobj)  # Shallow copy to avoid mutating caller’s dict.
+    processed_record = dict(qobj)  # Shallow copy to avoid mutating caller's dict.
     processed_record["model_evaluation_result"] = {
         "model_raw_response": llm_result["raw_response"],
         "model_answer": llm_result["extracted_answer"],

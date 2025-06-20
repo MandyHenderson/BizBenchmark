@@ -1,3 +1,31 @@
+"""Prompt templates for BizBenchmark evaluation framework.
+
+This module contains specialized prompt templates for different question types
+in the BizBenchmark evaluation system. Each prompt is designed to elicit
+structured JSON responses from language models for specific business domains
+and question formats.
+
+The prompts are used across four business domains:
+    - Economics (ECON)
+    - Finance (FIN) 
+    - Operations Management (OM)
+    - Statistics (STAT)
+
+Example:
+    from utils.prompt import single_prompt, SYSTEM_PROMPT
+    
+    # Use for single-choice questions
+    messages = [
+        {"role": "system", "content": single_prompt},
+        {"role": "user", "content": user_question}
+    ]
+
+Note:
+    All prompts are designed to produce JSON output with an "answer" key
+    to ensure consistent parsing across different question types.
+"""
+
+# Single-choice multiple choice prompt template
 single_prompt = """
 You are an AI assistant evaluating single-choice multiple-choice questions.
 Analyze the user's question, the provided options (A, B, C, D), and any provided context.
@@ -40,6 +68,7 @@ Do not include any other text, explanations, reasoning, or markdown formatting. 
 You MUST select one option from A, B, C, or D.
 """
 
+# Multiple-choice questions prompt template (allows multiple correct answers)
 multiple_prompt = """
 You are an AI assistant evaluating multiple-choice questions which may have one or more correct answers.
 Analyze the user's question, the provided options (typically A, B, C, D), and any provided context.
@@ -83,6 +112,7 @@ EXAMPLE JSON OUTPUT (multiple correct answers):
 Do not include any other text, explanations, reasoning, or markdown formatting. Output only the raw JSON object.
 """
 
+# Mathematical proof and detailed solution prompt template
 proof_prompt = """
 You are an AI assistant tasked with generating detailed solutions, proofs, or answers to complex questions.
 Analyze the user's question and any provided context carefully.
@@ -114,6 +144,7 @@ EXAMPLE JSON OUTPUT:
 Do not include any other text, explanations about your process, or markdown formatting *outside* of the JSON structure. Output only the raw JSON object.
 """
 
+# Table analysis and interpretation prompt template
 table_prompt = """
 You are an AI assistant analyzing a question that references a table (provided in HTML), an optional formula context, a heading, and possibly other context.
 
@@ -131,6 +162,7 @@ Then provide a detailed, step-by-step explanation/solution **in a single JSON ob
 5. Avoid referencing any 'gold_answer' or similar solution keys that might have been in the original dataset. You do not have that information.
 """
 
+# General question-answering prompt template for business domains
 general_prompt = """
 You are an expert economic researcher AI assistant specializing in econometrics and empirical economics, with extended expertise across economics, operations management (OM), finance, statistics, and financial accounting.
 The user will provide context consisting of a section title, background information, and extracted text passages from a research paper.
@@ -154,6 +186,7 @@ Then provide a detailed, step-by-step explanation/solution **in a single JSON ob
 5. Avoid referencing any 'gold_answer' or similar solution keys that might have been in the original dataset. You do not have that information.
 """
 
+# Numerical computation and calculation prompt template
 numerical_prompt = r"""
 You are an AI assistant for numerical statistical questions.
 The user provides only the question (no gold answer).
@@ -165,7 +198,7 @@ Respond with **exactly** one JSON object, no markdown fences, with a single key:
 }
 
 • The value must be a **string** that reproduces the numeric result(s) in the same
-  style used by the paper’s “Final Answer” block (e.g. boxed, parentheses, etc.).
+  style used by the paper's "Final Answer" block (e.g. boxed, parentheses, etc.).
 • If you are unsure, respond with an empty string "".
 
 Escape every backslash (e.g. "U_{\\star}").
@@ -178,6 +211,7 @@ Valid JSON output example:
 { "answer": "\\boxed{(50,\\ 30,\\ 20)}" }
 """
 
+# Fill-in-the-blank prompt template
 fill_prompt = """
 You are an expert AI assistant.
 The user will provide a question and some context text.
@@ -223,6 +257,7 @@ EXAMPLE JSON OUTPUT:
 }
 """
 
+# True/False evaluation prompt template
 tf_prompt = """
 You are an expert AI assistant.
 The user will provide context, which might include a title and paragraphs extracted from a research paper or other document.
@@ -258,6 +293,7 @@ EXAMPLE JSON OUTPUT (Illustrating Insufficiency - though for a better posed insu
 }
 """
 
+# System prompt for LLM-based evaluation and grading
 # SYSTEM_PROMPT uses 'category' as the key LLM should return for its assessment.
 # We will map this to 'llm_grader_category' in our internal structures.
 SYSTEM_PROMPT = """
@@ -285,6 +321,7 @@ Always return a JSON object with exactly these keys:
 }
 """
 
+# Template for user prompt in evaluation
 USER_TMPL = """
 QUESTION:
 {question}
