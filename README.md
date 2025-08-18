@@ -425,6 +425,120 @@ ps aux | grep python
 df -h ./result ./eval
 ```
 
+## Actual Scenarios
+#### 1. For Analyst task - Market Trend Analysis. The used dataset is the Financial Phrase Bank (FPB)
+   
+**Data Structure:**
+- Sentence: a tokenized line from the dataset
+- Label: a label corresponding to the class as a string: 'positive', 'negative' or 'neutral'
+
+**Data Instances:**
+```
+{ "sentence": "Pharmaceuticals group Orion Corp reported a fall in its third-quarter earnings that were hit by larger expenditures on R&D and marketing .",
+  "label": "negative"
+}
+```
+
+**Process:**
+The origin dataset covers a collection of 4840 sentences which are annotated by 16 people with adequate background knowledge on financial markets. Given the large number of  overlapping annotations, the origin dataset contains 4 alternative reference datasets based on the strength of majority agreement, including 'Sentences_50Agree', 'Sentences_66Agree', 'Sentences_75Agree' and 'Sentences_AllAgree'. We only utilize and process the subdataset 'Sentences_AllAgree' for our benchmark.
+The final dataset includes 2242 instances with 100% annotator agreement.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Analyst_Market_Trend_Analysis/FPB.json
+```
+
+**Citation information:**
+```
+@article{Malo2014GoodDO,
+  title={Good debt or bad debt: Detecting semantic orientations in economic texts},
+  author={P. Malo and A. Sinha and P. Korhonen and J. Wallenius and P. Takala},
+  journal={Journal of the Association for Information Science and Technology},
+  year={2014},
+  volume={65}
+}
+```
+
+#### 2. For Trader task - Market Trend Analysis. The used dataset is the M&A dataset
+
+**Data Structure:**
+- Instruction: A constant instruction string shared by all records.
+- Text: The news article or tweet from the dataset.
+- Answer: a label corresponding to the class as a string: 'complete', or 'rumour'.
+
+
+**Statistics:**
+It contains 500 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Market_Trend_Analysis/MA.json
+```
+
+**Citation information:**
+```
+@inproceedings{yang_2020_generating,
+  title={Generating Plausible Counterfactual Explanations for Deep Transformers in Financial Text Classification},
+  author={Yang, Linyi and Kenny, Eoin and Ng, Tin Lok James and Yang, Yi and Smyth, Barry and Dong, Ruihai},
+  booktitle={Proceedings of the 28th International Conference on Computational Linguistics},
+  year={2020},
+  pages={6150--6160}
+}
+```
+
+#### 3. For Consultant task - Market Trend Analysis. The used dataset is the FOMC dataset
+
+**Data Structure:**
+- Specific instruction: a constant instruction string released by the central bank, describing the classification task.
+- Text: a text containing an excerpt from the central bank's statement.
+- Answer: a label corresponding to the class as a string: 'complete', or 'rumour'.
+
+**Statistics:**
+It contains 496 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Market_Trend_Analysis/FOMC.json
+```
+
+**Citation information:**
+```
+@inproceedings{shah2023trillion,
+  title={Trillion Dollar Words: A New Financial Dataset, Task \& Market Analysis},
+  author={Agam Shah and Suvan Paturi and Sudheer Chava},
+  booktitle={Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  year={2023},
+  pages={6664--6679},
+  publisher={Association for Computational Linguistics}
+}
+```
+
+#### 4. For Analyst task - Fraud Detection. The used dataset is the CCFraud dataset
+
+**Data Structure:**
+- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+
+**Statistics:**
+It contains 4773 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
+
+**Citation information:**
+```
+@misc{feng2023empowering,
+      title={Empowering Many, Biasing a Few: Generalist Credit Scoring through Large Language Models}, 
+      author={Duanyu Feng and Yongfu Dai and Jimin Huang and Yifang Zhang and Qianqian Xie and Weiguang Han and Alejandro Lopez-Lira and Hao Wang},
+      year={2023},
+      eprint={2310.00566},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
 ## 🤝 Contributing
 
 We welcome contributions! Please:
