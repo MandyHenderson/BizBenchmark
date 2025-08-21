@@ -649,7 +649,7 @@ Dataset/Actual_Task/Consultant_Financial_Document_Analysis/EDTSUM.json
 }
 ```
 
-#### 8. For Trader task - Algorithic Trading. The used dataset is CIKM18 dataset
+#### 8. For Trader task - Asset Pricing. The used dataset is CIKM18 dataset
 
 https://huggingface.co/datasets/TheFinAI/flare-sm-cikm/viewer/default/train?row=0&views%5B%5D=train
 
@@ -658,7 +658,7 @@ It contains 4967 records.
 
 **Data Path:**
 ```
-Dataset/Trader_Task/Trader_Algorithic_Trading/CIKM18.json
+Dataset/Trader_Task/Trader_Asset_Pricing/CIKM18.json
 ```
 
 **Citation information:**
