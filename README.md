@@ -522,15 +522,15 @@ Dataset/Actual_Task/Trader_Market_Trend_Analysis/FOMC.json
 
 **Data Structure:**
 - ID: a unique identifier for each instance.
-- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Text: a string that includes the PCA-transformed principal components (V1 to V28) as numerical variables and the transaction amount, describing a client.
 - Answer: a label corresponding to the class as a string: 'yes', or 'no'.
 
 **Statistics:**
-It contains 4773 records.
+It contains 7974 records.
 
 **Data Path:**
 ```
-Dataset/Actual_Task/Trader_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+Dataset/Actual_Task/Analyst_Market_Trend_Analysis/CCFraud.json
 ```
 
 **Citation information:**
@@ -542,6 +542,134 @@ Dataset/Actual_Task/Trader_Market_Trend_Analysis/Taiwan_Economic_Journal.json
       eprint={2310.00566},
       archivePrefix={arXiv},
       primaryClass={cs.LG}
+}
+```
+
+#### 5. For Consultant task - Fraud Detection. The used dataset is the Taiwan dataset
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+
+**Statistics:**
+It contains 4773 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
+
+**Citation information:**
+```
+@misc{feng2023empowering,
+      title={Empowering Many, Biasing a Few: Generalist Credit Scoring through Large Language Models}, 
+      author={Duanyu Feng and Yongfu Dai and Jimin Huang and Yifang Zhang and Qianqian Xie and Weiguang Han and Alejandro Lopez-Lira and Hao Wang},
+      year={2023},
+      eprint={2310.00566},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
+#### 6. For Analyst task - Financial Document Analysis. The used datasets include FNXL, FinQA, TATQA, FinRED
+
+For this task, we have processed four dataset as each dataset is designed to extract different aspects of financial information. FinRED enables the identification of relationships between entities, essential for understanding connections within financial documents; FinQA and TATQA facilitate the extraction of precise numerical insights from contexts; FNXL specializes labeling numeric data, which helps understanding the roles of various fianncial figures.
+
+https://huggingface.co/datasets/TheFinAI/flare-fnxl/viewer/default/test?row=1&views%5B%5D=test
+
+https://huggingface.co/datasets/TheFinAI/flare-finqa/viewer/default/train?row=0&views%5B%5D=train
+
+https://huggingface.co/datasets/TheFinAI/flare-tatqa/viewer/default/test?row=1&views%5B%5D=test
+
+https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&views%5B%5D=train
+
+
+
+**Citation information for FNXL:**
+```
+@inproceedings{sharma2023financial,
+  title={Financial numeric extreme labelling: A dataset and benchmarking},
+  author={Sharma, Soumya and Khatuya, Subhendu and Hegde, Manjunath and Shaikh, Afreen and Dasgupta, Koustuv and Goyal, Pawan and Ganguly, Niloy},
+  booktitle={Findings of the Association for Computational Linguistics: ACL 2023},
+  pages={3550--3561},
+  year={2023}
+}
+```
+**Citation information for FinQA:**
+```
+@article{chen2021finqa,
+  title={Finqa: A dataset of numerical reasoning over financial data},
+  author={Chen, Zhiyu and Chen, Wenhu and Smiley, Charese and Shah, Sameena and Borova, Iana and Langdon, Dylan and Moussa, Reema and Beane, Matt and Huang, Ting-Hao and Routledge, Bryan and others},
+  journal={arXiv preprint arXiv:2109.00122},
+  year={2021}
+}
+```
+**Citation information for TATQA:**
+```
+@article{zhu2021tat,
+  title={TAT-QA: A question answering benchmark on a hybrid of tabular and textual content in finance},
+  author={Zhu, Fengbin and Lei, Wenqiang and Huang, Youcheng and Wang, Chao and Zhang, Shuo and Lv, Jiancheng and Feng, Fuli and Chua, Tat-Seng},
+  journal={arXiv preprint arXiv:2105.07624},
+  year={2021}
+}
+```
+**Citation information for FinRED:**
+```
+@inproceedings{sharma2022finred,
+  title={FinRED: A dataset for relation extraction in financial domain},
+  author={Sharma, Soumya and Nayak, Tapas and Bose, Arusarka and Meena, Ajay Kumar and Dasgupta, Koustuv and Ganguly, Niloy and Goyal, Pawan},
+  booktitle={Companion Proceedings of the Web Conference 2022},
+  pages={595--597},
+  year={2022}
+}
+```
+
+
+#### 7. For Consultant task - Financial Document Analysis. The used dataset is the EDTSUM dataset
+
+
+**Statistics:**
+It contains 2000 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Financial_Document_Analysis/EDTSUM.json
+```
+
+**Citation information:**
+```
+@inproceedings{zhou2021trede,
+     author = {Zhihan Zhou and Liqian Ma and Han Liu},
+     title = {Trade the Event: Corporate Events Detection for News-Based Event-Driven Trading},
+     booktitle = {Findings of the Association for Computational Linguistics: ACL-IJCNLP2021},
+     pages = {2114--2124},
+     year = {2021},
+     publisher = {Association for Computational Linguistics}
+}
+```
+
+#### 8. For Trader task - Algorithic Trading. The used dataset is CIKM18 dataset
+
+https://huggingface.co/datasets/TheFinAI/flare-sm-cikm/viewer/default/train?row=0&views%5B%5D=train
+
+**Statistics:**
+It contains 4967 records.
+
+**Data Path:**
+```
+Dataset/Trader_Task/Trader_Algorithic_Trading/CIKM18.json
+```
+
+**Citation information:**
+```
+@inproceedings{wu2018hybrid,
+     author = {Huizhe Wu and Wei Zhang and Weiwei Shen and Jun Wang},
+     title = {Hybrid Deep Sequential Modeling for Social Text-Driven Stock Prediction},
+     booktitle = {Proceedings of the27th ACM International Conference on Information and Knowledge Management},
+     pages = {1627--1630},
+     year = {2018},
+     publisher = {Association for Computational Linguistics}
 }
 ```
 
