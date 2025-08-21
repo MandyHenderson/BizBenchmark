@@ -429,12 +429,15 @@ df -h ./result ./eval
 #### 1. For Analyst task - Market Trend Analysis. The used dataset is the Financial Phrase Bank (FPB)
    
 **Data Structure:**
+- ID: a unique identifier for each instance.
 - Sentence: a tokenized line from the dataset
 - Label: a label corresponding to the class as a string: 'positive', 'negative' or 'neutral'
 
 **Data Instances:**
 ```
-{ "sentence": "Pharmaceuticals group Orion Corp reported a fall in its third-quarter earnings that were hit by larger expenditures on R&D and marketing .",
+{
+  “ID": 1,
+  "sentence": "Pharmaceuticals group Orion Corp reported a fall in its third-quarter earnings that were hit by larger expenditures on R&D and marketing .",
   "label": "negative"
 }
 ```
@@ -462,6 +465,7 @@ Dataset/Actual_Task/Analyst_Market_Trend_Analysis/FPB.json
 #### 2. For Trader task - Market Trend Analysis. The used dataset is the M&A dataset
 
 **Data Structure:**
+- ID: a unique identifier for each instance.
 - Instruction: A constant instruction string shared by all records.
 - Text: The news article or tweet from the dataset.
 - Answer: a label corresponding to the class as a string: 'complete', or 'rumour'.
@@ -489,6 +493,7 @@ Dataset/Actual_Task/Trader_Market_Trend_Analysis/MA.json
 #### 3. For Consultant task - Market Trend Analysis. The used dataset is the FOMC dataset
 
 **Data Structure:**
+- ID: a unique identifier for each instance.
 - Specific instruction: a constant instruction string released by the central bank, describing the classification task.
 - Text: a text containing an excerpt from the central bank's statement.
 - Answer: a label corresponding to the class as a string: 'complete', or 'rumour'.
@@ -516,6 +521,7 @@ Dataset/Actual_Task/Trader_Market_Trend_Analysis/FOMC.json
 #### 4. For Analyst task - Fraud Detection. The used dataset is the CCFraud dataset
 
 **Data Structure:**
+- ID: a unique identifier for each instance.
 - Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
 - Answer: a label corresponding to the class as a string: 'yes', or 'no'.
 
