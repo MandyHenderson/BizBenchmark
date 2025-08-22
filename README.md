@@ -576,7 +576,6 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
 
 For this task, we have processed four dataset as each dataset is designed to extract different aspects of financial information. FinRED enables the identification of relationships between entities, essential for understanding connections within financial documents; FinQA and TATQA facilitate the extraction of precise numerical insights from contexts; FNXL specializes labeling numeric data, which helps understanding the roles of various fianncial figures.
 
-https://huggingface.co/datasets/TheFinAI/flare-fnxl/viewer/default/test?row=1&views%5B%5D=test
 
 https://huggingface.co/datasets/TheFinAI/flare-finqa/viewer/default/train?row=0&views%5B%5D=train
 
@@ -584,7 +583,22 @@ https://huggingface.co/datasets/TheFinAI/flare-tatqa/viewer/default/test?row=1&v
 
 https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&views%5B%5D=train
 
+-----
 
+**Data Structure for FNXL:**
+- ID: a unique identifier for each instance.
+- Specific Instruction: a detailed instruction for financial labeling task, specifying the requirement to identify and assign semantic role labels to each token in financial sentences, with comprehensive label categories covering various financial concepts and accounting terms.
+- Text: financial sentence extracted from corporate reports and financial documents, typically including numerical values, financial metrics, accounting terms, and temporal references that require semantic role identification and labeling.
+- Answer: token-level semantic role annotations in the format of 'token:label' pairs.
+- Label: array-formatted semantic role labels corresponding to each token in the input sentence.
+
+**Statistics for FNXL:**
+It contains 318 records.
+
+**Data Path for FNXL:**
+```
+Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
 
 **Citation information for FNXL:**
 ```
@@ -596,6 +610,21 @@ https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&vi
   year={2023}
 }
 ```
+------
+
+**Data Structure for FinQA:**
+- ID: a unique identifier for each instance.
+- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+
+**Statistics for FinQA:**
+It contains 4773 records.
+
+**Data Path for FinQA:**
+```
+Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
+
 **Citation information for FinQA:**
 ```
 @article{chen2021finqa,
@@ -605,6 +634,22 @@ https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&vi
   year={2021}
 }
 ```
+
+-----
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+
+**Statistics:**
+It contains 4773 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
+
 **Citation information for TATQA:**
 ```
 @article{zhu2021tat,
@@ -614,6 +659,20 @@ https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&vi
   year={2021}
 }
 ```
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
+- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+
+**Statistics:**
+It contains 4773 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+```
+
 **Citation information for FinRED:**
 ```
 @inproceedings{sharma2022finred,
@@ -628,6 +687,11 @@ https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&vi
 
 #### 7. For Consultant task - Financial Document Analysis. The used dataset is the EDTSUM dataset
 
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Specific instruction: a constant instruction string, requiring the model to perform abstractive summarization on the given text. 
+- Text: a text containing complete financial press releases or business documents.
+- Answer: The condensed summary of the original text, highlighting core events, key entities, and main motivations.
 
 **Statistics:**
 It contains 2000 records.
@@ -651,10 +715,14 @@ Dataset/Actual_Task/Consultant_Financial_Document_Analysis/EDTSUM.json
 
 #### 8. For Trader task - Asset Pricing. The used dataset is CIKM18 dataset
 
-https://huggingface.co/datasets/TheFinAI/flare-sm-cikm/viewer/default/train?row=0&views%5B%5D=train
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Specific instruction: a constant instruction string for the asset pricing prediction task, requireing the model to predict whether the price will rise of fall on a specific date.
+- Text: a text containing the stock price time-series data, and the twitter tweets related to stocks.
+- Answer: a label corresponding to the class as a string: 'rise', or 'fall'.
 
 **Statistics:**
-It contains 4967 records.
+It contains 12905 records.
 
 **Data Path:**
 ```
