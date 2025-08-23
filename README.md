@@ -577,10 +577,6 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
 For this task, we have processed four dataset as each dataset is designed to extract different aspects of financial information. FinRED enables the identification of relationships between entities, essential for understanding connections within financial documents; FinQA and TATQA facilitate the extraction of precise numerical insights from contexts; FNXL specializes labeling numeric data, which helps understanding the roles of various fianncial figures.
 
 
-https://huggingface.co/datasets/TheFinAI/flare-finqa/viewer/default/train?row=0&views%5B%5D=train
-
-https://huggingface.co/datasets/TheFinAI/flare-tatqa/viewer/default/test?row=1&views%5B%5D=test
-
 https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&views%5B%5D=train
 
 -----
@@ -597,7 +593,7 @@ It contains 318 records.
 
 **Data Path for FNXL:**
 ```
-Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FNXL.json
 ```
 
 **Citation information for FNXL:**
@@ -614,15 +610,16 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
 
 **Data Structure for FinQA:**
 - ID: a unique identifier for each instance.
-- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
-- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+- Specific Instruction: a detailed instruction for financial question answering task, directing the model to answer based on the provided context.
+- Question: a specific financial question requiring numerical calculations or factual answers.
+- Answer: precise numerical values or textual responses to financial questions.
 
 **Statistics for FinQA:**
-It contains 4773 records.
+It contains 6251 records.
 
 **Data Path for FinQA:**
 ```
-Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinQA.json
 ```
 
 **Citation information for FinQA:**
@@ -637,17 +634,18 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
 
 -----
 
-**Data Structure:**
+**Data Structure for TATQA:**
 - ID: a unique identifier for each instance.
-- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
-- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+- Specific Instruction: a detailed instruction for table-based financial question answering task, directing the model to answer based on the provided tabular context.
+- Question: a specific financial question requiring table interpretation and numerical reasoning, requiring understanding of tabular data structure and relationships between different financial categories and time periods.
+- Answer: precise answers derived from table analysis.
 
-**Statistics:**
-It contains 4773 records.
+**Statistics for TATQA:**
+It contains 1668 records.
 
-**Data Path:**
+**Data Path for TATQA:**
 ```
-Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+Dataset/Actual_Task/Analyst_Financial_Document_Analysis/TATQA.json
 ```
 
 **Citation information for TATQA:**
@@ -659,18 +657,20 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
   year={2021}
 }
 ```
+-----
 
-**Data Structure:**
+**Data Structure for FinRED:**
 - ID: a unique identifier for each instance.
-- Text: a natural-language serialization of firm-level financial indicators from the Taiwan Economic Journal bankruptcy dataset, listing feature names and values (e.g., profitability, leverage, liquidity, turnover, growth, cash flow, and per-share metrics) for a single company.
-- Answer: a label corresponding to the class as a string: 'yes', or 'no'.
+- Specific Instruction: a detailed instruction for financial named entity recognition tasks, providing guidelines to identify and classify named entities from financial documents into three categories: persons (PER), organizations (ORG), and locations (LOC).
+- Text: sentences extracted from financial agreements and SEC fillings.
+- Answer: structured names entity annotations in the format of 'entity name, entity type' pairs.
 
-**Statistics:**
-It contains 4773 records.
+**Statistics for FinRED:**
+It contains 408 records.
 
-**Data Path:**
+**Data Path for FinRED:**
 ```
-Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.json
+Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinRED.json
 ```
 
 **Citation information for FinRED:**
@@ -683,7 +683,6 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
   year={2022}
 }
 ```
-
 
 #### 7. For Consultant task - Financial Document Analysis. The used dataset is the EDTSUM dataset
 
