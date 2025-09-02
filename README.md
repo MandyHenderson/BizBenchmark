@@ -725,7 +725,7 @@ It contains 12905 records.
 
 **Data Path:**
 ```
-Dataset/Trader_Task/Trader_Asset_Pricing/CIKM18.json
+Dataset/Actual_Task/Trader_Asset_Pricing/CIKM18.json
 ```
 
 **Citation information:**
@@ -747,6 +747,24 @@ Dataset/Trader_Task/Trader_Asset_Pricing/CIKM18.json
 - Text：the revelant context passage provided to the model, extracted without headers from the source document.
 - Question: the user query about the context that the model should answer.
 - Answer: the ground-truth reference answer derived from the context.
+
+**Statistics:**
+It contains 85 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Analyst_Risk_Management/SECQUE.json
+```
+
+**Citation information:**
+```
+@article{noga2025secque,
+  title={SECQUE: A Benchmark for Evaluating Real-World Financial Analysis Capabilities},
+  author={Yoash, Noga Ben and Brief, Meni and Ovadia, Oded and Shenderovitz, Gil and Mishaeli, Moshik and Lemberg, Rachel and Sheetrit, Eitam},
+  journal={arXiv preprint arXiv:2504.04596},
+  year={2025}
+}
+```
 
 ## 🤝 Contributing
 
