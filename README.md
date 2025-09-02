@@ -740,6 +740,14 @@ Dataset/Trader_Task/Trader_Asset_Pricing/CIKM18.json
 }
 ```
 
+#### 9. For Analyst task - Risk Management. The used dataset is the SECQUE
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text：the revelant context passage provided to the model, extracted without headers from the source document.
+- Question: the user query about the context that the model should answer.
+- Answer: the ground-truth reference answer derived from the context.
+
 ## 🤝 Contributing
 
 We welcome contributions! Please:
