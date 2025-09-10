@@ -436,7 +436,7 @@ df -h ./result ./eval
 **Data Instances:**
 ```
 {
-  “ID": 1,
+  "ID": 1,
   "sentence": "Pharmaceuticals group Orion Corp reported a fall in its third-quarter earnings that were hit by larger expenditures on R&D and marketing .",
   "label": "negative"
 }
@@ -444,7 +444,10 @@ df -h ./result ./eval
 
 **Process:**
 The origin dataset covers a collection of 4840 sentences which are annotated by 16 people with adequate background knowledge on financial markets. Given the large number of  overlapping annotations, the origin dataset contains 4 alternative reference datasets based on the strength of majority agreement, including 'Sentences_50Agree', 'Sentences_66Agree', 'Sentences_75Agree' and 'Sentences_AllAgree'. We only utilize and process the subdataset 'Sentences_AllAgree' for our benchmark.
-The final dataset includes 2242 instances with 100% annotator agreement.
+The final dataset includes 500 instances with 100% annotator agreement.
+
+**Statistics:**
+It contains 500 records.
 
 **Data Path:**
 ```
@@ -526,7 +529,7 @@ Dataset/Actual_Task/Trader_Market_Trend_Analysis/FOMC.json
 - Answer: a label corresponding to the class as a string: 'yes', or 'no'.
 
 **Statistics:**
-It contains 7974 records.
+It contains 500 records.
 
 **Data Path:**
 ```
@@ -553,7 +556,7 @@ Dataset/Actual_Task/Analyst_Market_Trend_Analysis/CCFraud.json
 - Answer: a label corresponding to the class as a string: 'yes', or 'no'.
 
 **Statistics:**
-It contains 4773 records.
+It contains 500 records.
 
 **Data Path:**
 ```
@@ -575,9 +578,6 @@ Dataset/Actual_Task/Consultant_Market_Trend_Analysis/Taiwan_Economic_Journal.jso
 #### 6. For Analyst task - Financial Document Analysis. The used datasets include FNXL, FinQA, TATQA, FinRED
 
 For this task, we have processed four dataset as each dataset is designed to extract different aspects of financial information. FinRED enables the identification of relationships between entities, essential for understanding connections within financial documents; FinQA and TATQA facilitate the extraction of precise numerical insights from contexts; FNXL specializes labeling numeric data, which helps understanding the roles of various fianncial figures.
-
-
-https://huggingface.co/datasets/TheFinAI/flare-ner/viewer/default/train?row=0&views%5B%5D=train
 
 -----
 
@@ -615,7 +615,7 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FNXL.json
 - Answer: precise numerical values or textual responses to financial questions.
 
 **Statistics for FinQA:**
-It contains 6251 records.
+It contains 500 records.
 
 **Data Path for FinQA:**
 ```
@@ -641,7 +641,7 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinQA.json
 - Answer: precise answers derived from table analysis.
 
 **Statistics for TATQA:**
-It contains 1668 records.
+It contains 500 records.
 
 **Data Path for TATQA:**
 ```
@@ -693,7 +693,7 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinRED.json
 - Answer: The condensed summary of the original text, highlighting core events, key entities, and main motivations.
 
 **Statistics:**
-It contains 2000 records.
+It contains 500 records.
 
 **Data Path:**
 ```
@@ -721,7 +721,7 @@ Dataset/Actual_Task/Consultant_Financial_Document_Analysis/EDTSUM.json
 - Answer: a label corresponding to the class as a string: 'rise', or 'fall'.
 
 **Statistics:**
-It contains 12905 records.
+It contains 500 records.
 
 **Data Path:**
 ```
@@ -740,9 +740,13 @@ Dataset/Actual_Task/Trader_Asset_Pricing/CIKM18.json
 }
 ```
 
-#### 9. For Analyst task - Risk Management. The used dataset is the SECQUE
+#### 9. For Analyst task - Risk Management. The used datasets include SECQUE and FRM
 
-**Data Structure:**
+For this task, we have processed two dataset: SECQUE and FRM. SECQUE comprises expert-authored questions grounded in SEC filings from 29 companies across 4 distinct years, enabling realistic, document-grounded risk management evaluation. The FRM dataset is curated from FRM practice exams (2006-2016), covering core risk management topic with real-world decision making scenarios.
+
+----
+
+**Data Structure for SECQUE:**
 - ID: a unique identifier for each instance.
 - Text：the revelant context passage provided to the model, extracted without headers from the source document.
 - Question: the user query about the context that the model should answer.
@@ -764,6 +768,22 @@ Dataset/Actual_Task/Analyst_Risk_Management/SECQUE.json
   journal={arXiv preprint arXiv:2504.04596},
   year={2025}
 }
+```
+
+----
+**Data Structure for FRM:**
+- ID: a unique identifier for each instance.
+- Question：the FRM exam problems that the model should answer.
+- Options: the multiple-choice options (e.g., A-D) available for selection.
+- Answer: the correct option label corresponding to the question.
+- Explanation: a concise retionale or calculating justifying the correct answer.
+
+**Statistics:**
+It contains 438 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Analyst_Risk_Management/FRM.json
 ```
 
 ## 🤝 Contributing
