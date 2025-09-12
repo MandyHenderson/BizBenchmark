@@ -469,7 +469,6 @@ Dataset/Actual_Task/Analyst_Market_Trend_Analysis/FPB.json
 
 **Data Structure:**
 - ID: a unique identifier for each instance.
-- Instruction: A constant instruction string shared by all records.
 - Text: The news article or tweet from the dataset.
 - Answer: a label corresponding to the class as a string: 'complete', or 'rumour'.
 
@@ -583,7 +582,6 @@ For this task, we have processed four dataset as each dataset is designed to ext
 
 **Data Structure for FNXL:**
 - ID: a unique identifier for each instance.
-- Specific Instruction: a detailed instruction for financial labeling task, specifying the requirement to identify and assign semantic role labels to each token in financial sentences, with comprehensive label categories covering various financial concepts and accounting terms.
 - Text: financial sentence extracted from corporate reports and financial documents, typically including numerical values, financial metrics, accounting terms, and temporal references that require semantic role identification and labeling.
 - Answer: token-level semantic role annotations in the format of 'token:label' pairs.
 - Label: array-formatted semantic role labels corresponding to each token in the input sentence.
@@ -610,7 +608,7 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FNXL.json
 
 **Data Structure for FinQA:**
 - ID: a unique identifier for each instance.
-- Specific Instruction: a detailed instruction for financial question answering task, directing the model to answer based on the provided context.
+- Context: the provided context directing financial question answering task.
 - Question: a specific financial question requiring numerical calculations or factual answers.
 - Answer: precise numerical values or textual responses to financial questions.
 
@@ -636,7 +634,7 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinQA.json
 
 **Data Structure for TATQA:**
 - ID: a unique identifier for each instance.
-- Specific Instruction: a detailed instruction for table-based financial question answering task, directing the model to answer based on the provided tabular context.
+- Context: the provided context directing financial question answering task.
 - Question: a specific financial question requiring table interpretation and numerical reasoning, requiring understanding of tabular data structure and relationships between different financial categories and time periods.
 - Answer: precise answers derived from table analysis.
 
@@ -661,7 +659,6 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/TATQA.json
 
 **Data Structure for FinRED:**
 - ID: a unique identifier for each instance.
-- Specific Instruction: a detailed instruction for financial named entity recognition tasks, providing guidelines to identify and classify named entities from financial documents into three categories: persons (PER), organizations (ORG), and locations (LOC).
 - Text: sentences extracted from financial agreements and SEC fillings.
 - Answer: structured names entity annotations in the format of 'entity name, entity type' pairs.
 
@@ -688,7 +685,6 @@ Dataset/Actual_Task/Analyst_Financial_Document_Analysis/FinRED.json
 
 **Data Structure:**
 - ID: a unique identifier for each instance.
-- Specific instruction: a constant instruction string, requiring the model to perform abstractive summarization on the given text. 
 - Text: a text containing complete financial press releases or business documents.
 - Answer: The condensed summary of the original text, highlighting core events, key entities, and main motivations.
 
