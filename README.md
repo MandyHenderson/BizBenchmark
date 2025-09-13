@@ -701,7 +701,30 @@ Dataset/Actual_Task/Consultant_Financial_Document_Analysis/EDTSUM.json
 }
 ```
 
-#### 8. For Trader task - Asset Pricing. The used dataset is CIKM18 dataset
+#### 8. For Analyst task - Asset Pricing. The used dataset is the AP_A dataset
+
+This dataset is curated from xxx, providing challenging single-choice questions that xxx.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Question: the AP exam problem that the model should answer.
+- Options: the multiple-choice options (e.g., A-D) available for selection.
+- Answer: the correct option label corresponding to the question.
+
+**Statistics:**
+It contains 495 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Analyst_Asset_Pricing/AP_A.json
+```
+
+**Citation information:**
+```
+
+```
+
+#### 9. For Trader task - Asset Pricing. The used dataset is CIKM18 dataset
 
 **Data Structure:**
 - ID: a unique identifier for each instance.
@@ -729,7 +752,8 @@ Dataset/Actual_Task/Trader_Asset_Pricing/CIKM18.json
 }
 ```
 
-#### 9. For Analyst task - Risk Management. The used datasets include SECQUE and FRM
+
+#### 10. For Analyst task - Risk Management. The used datasets include SECQUE and FRM
 
 For this task, we have processed two dataset: SECQUE and FRM. SECQUE comprises expert-authored questions grounded in SEC filings from 29 companies across 4 distinct years, enabling realistic, document-grounded risk management evaluation. The FRM dataset is curated from FRM practice exams (2006-2016), covering core risk management topic with real-world decision making scenarios.
 
@@ -774,6 +798,172 @@ It contains 438 records.
 ```
 Dataset/Actual_Task/Analyst_Risk_Management/FRM.json
 ```
+
+#### 11. For Consultant task - Risk Management. The used dataset is the RM_C dataset
+
+This dataset contains complex, open-ended questions that require models to synthesize information from a given context to provide a derived, explanatory answer, simulating a consultant's risk analysis task.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the relevant context passage provided to the model.
+- Question: the user query about the context that the model should answer.
+- Answer: the ground-truth reference answer derived from the context.
+
+**Statistics:**
+It contains 500 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Risk_Management/RM_C.json
+```
+
+**Citation information:**
+```
+
+```
+
+#### 12. For Trader and Consultant task - Strategy Development. The used dataset is the SD_T dataset
+
+These datasets challenge models to develop and articulate financial strategies based on provided scenarios and data, mirroring the roles of a trader and a consultant in strategy formulation.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the context containing the scenario, market data, and background information.
+- Question: a prompt asking the model to formulate a strategy.
+- Answer: the ground-truth reference answer detailing the required strategy.
+
+**Statistics:**
+- SD_T contains 318 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Strategy_Development/SD_T.json
+```
+
+**Citation information:**
+```
+
+```
+
+#### 12. For Trader and Consultant task - Strategy Development. The used dataset is the SD_T dataset
+
+These datasets challenge models to develop and articulate financial strategies based on provided scenarios and data, mirroring the roles of a trader and a consultant in strategy formulation.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the context containing the scenario, market data, and background information.
+- Question: a prompt asking the model to formulate a strategy.
+- Answer: the ground-truth reference answer detailing the required strategy.
+
+**Statistics:**
+- SD_T contains 318 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Strategy_Development/SD_T.json
+```
+
+**Citation information:**
+```
+
+```
+
+### 13. For Trader and Consultant task - Strategy Development. The used dataset is the SD_C dataset
+
+These datasets challenge models to develop and articulate financial strategies based on provided scenarios and data, mirroring the roles of a trader and a consultant in strategy formulation.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the context containing the scenario, market data, and background information.
+- Question: a prompt asking the model to formulate a plan.
+- Answer: the ground-truth reference answer detailing the required strategy.
+
+**Statistics:**
+- SD_C contains 497 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Strategy_Developmet/SD_C.json
+```
+
+**Citation information:**
+```
+
+```
+
+#### 14. For Analyst task - Portfolio Management. The used dataset is PM_A dataset
+
+These datasets assess the ability to perform tasks related to portfolio management, such as asset evaluation and memo generation, based on detailed analytical reports.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the context, typically an analyst report or market analysis.
+- Question: a set of instructions or questions for the model to address.
+- Answer: the ground-truth, well-structured response, such as an investment memo.
+
+**Statistics:**
+- PM_A contains 315 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Analyst_Portfolio_Management/PM_A.json
+```
+
+**Citation information:**
+```
+
+```
+
+#### 15. For Consultant task - Portfolio Management. The used dataset is PM_C dataset
+
+These datasets assess the ability to perform tasks related to portfolio management, such as asset evaluation and memo generation, based on detailed analytical reports.
+
+**Data Structure:**
+- ID: a unique identifier for each instance.
+- Text: the context, typically an analyst report or market analysis.
+- Question: a set of instructions or questions for the model to address.
+- Answer: the ground-truth, well-structured response, such as an investment memo.
+
+**Statistics:**
+- PM_C contains 500 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Consultant_Portfolio_Management/PM_C.json
+```
+
+**Citation information:**
+```
+
+```
+#### 16. For Trader task - Algorithm Trading. The used datasets include AT_T_Algorithm and AT_T_Strategy
+
+This task is split into two distinct problem types to evaluate a trader's ability to both design and implement algorithmic strategies. AT_T_Algorithm focuses on generating pseudocode from a framework, while AT_T_Strategy focuses on articulating the high-level logic of a strategy.
+
+----
+
+**Data Structure for AT_T_Algorithm:**
+- ID: a unique identifier for each instance.
+- Text: a detailed description of a quantitative framework or algorithm.
+- Question: a prompt asking the model to implement the logic in pseudocode.
+- Answer: the ground-truth pseudocode implementation.
+
+**Data Structure for AT_T_Strategy:**
+- ID: a unique identifier for each instance.
+- Text: a detailed description of a quantitative framework or algorithm.
+- Question: a prompt asking the model to describe the strategic process in a paragraph.
+- Answer: the ground-truth, high-level description of the strategy.
+
+**Statistics:**
+- AT_T_Algorithm contains 155 records.
+- AT_T_Strategy contains 88 records.
+
+**Data Path:**
+```
+Dataset/Actual_Task/Trader_Algorithm_Trading/Trader_Algorithm_Trading_Algorithm/AT_T_Algorithm.json
+Dataset/Actual_Task/Trader_Algorithm_Trading/Trader_Algorithm_Trading_Strategy_Design/AT_T_Strategy.json
+```
+
 
 ## 🤝 Contributing
 
