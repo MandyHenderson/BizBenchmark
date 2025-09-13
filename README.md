@@ -36,31 +36,24 @@ bizbench = load_dataset('MandyHenderson/BizBenchmark')
 BizBenchmark question types organized by domain:
 
 | Domain | Category | Subcategory | Parameter | Directory |
-|--------|----------|-------------|-----------|-----------|
+|---|---|---|---|---|
 | **OM** | QA | Table QA | `table` | `Table_QA/` |
 | | | General QA | `general` | `General_QA/` |
 | | Choice | Single Choice | `single` | `Single_Choice/` |
 | | | Multiple Choice | `multiple` | `Multiple_Choice/` |
-| | T/F | --- | `tf` | `TF/` |
 | **Economics** | QA | Table QA | `table` | `Table_QA/` |
 | | | General QA | `general` | `General_QA/` |
-| | | Financial News QA | `general` | `General_QA/` |
 | | Choice | Single Choice | `single` | `Single_Choice/` |
 | | | Multiple Choice | `multiple` | `Multiple_Choice/` |
-| | T/F | --- | `tf` | `TF/` |
 | **Finance** | QA | Table QA | `table` | `Table_QA/` |
 | | | General QA | `general` | `General_QA/` |
-| | | Financial News QA | `general` | `General_QA/` |
 | | Choice | Single Choice | `single` | `Single_Choice/` |
 | | | Multiple Choice | `multiple` | `Multiple_Choice/` |
-| | T/F | --- | `tf` | `TF/` |
-| **Statistics** | QA | General QA | `general` | `General_QA/` |
-| | | Numerical QA | `numerical` | `Numerical_QA/` |
-| | | Proof | `proof` | `Proof/` |
-| | | Fill-in-the-blank | `fill` | `Fill-in-the-Blank/` |
+| **Statistics** | QA | Table QA | `table` | `Table_QA/` |
+| | | General QA | `general` | `General_QA/` |
 | | Choice | Single Choice | `single` | `Single_Choice/` |
 | | | Multiple Choice | `multiple` | `Multiple_Choice/` |
-| | T/F | --- | `tf` | `TF/` |
+
 
 ## 📋 Data Format
 
